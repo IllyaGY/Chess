@@ -1,0 +1,47 @@
+#pragma once
+
+#include <SFML/Graphics.hpp>
+#include <memory>
+#include <map>
+#include "Figure.h"
+#define  SIZE  64 
+
+class Figure;
+
+
+class Field
+{
+public:
+	sf::RectangleShape field[SIZE];
+	std::map<int, std::shared_ptr<Figure>> board;
+
+	sf::RectangleShape green;
+	sf::RectangleShape white;
+
+	float s = 0;
+	int spawnPos = -1;
+
+	bool setActive = false;
+	std::vector<sf::Color> backUp;
+
+	float leftOffset = 0;
+	float topOffset = 0;
+
+
+	std::vector<int> activeFields{};
+
+
+	Field(int squareSize, int &x, int &y);
+
+
+	sf::Vector2f getCoord(int i);
+	bool getStatus();
+	bool isClicked(sf::Vector2f pos, sf::Vector2f posCurr);
+	int cubesClicked(sf::Vector2f pos);
+
+	void setPassMove(std::vector<int> pVec);
+	//void fillBoard(int pos, std::shared_ptr<Figure> figure);
+	void deactivateMove();
+	void fieldToScreen(sf::RenderWindow *window);
+};
+
