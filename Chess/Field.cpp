@@ -65,7 +65,7 @@ int Field::cubesClicked(sf::Vector2f pos, Game *game) {
 			pos.y >= field[activeAttackFields.at(i)].getPosition().y && pos.y <= field[activeAttackFields.at(i)].getPosition().y + s) {
 			game->remove(board.at(activeAttackFields.at(i)));
 			//int k = activeAttackFields.at(i); 
-			//board.erase(activeAttackFields.at(i));
+			board.erase(activeAttackFields.at(i));
 			return activeAttackFields.at(i);
 		}
 	}
