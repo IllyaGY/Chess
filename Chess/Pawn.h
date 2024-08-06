@@ -2,21 +2,26 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Figure.h"
 #include "Field.h"
+
+class Field;
+
 
 class Pawn : public Figure
 {
 public:
-	sf::Texture texture;
+	sf::Texture black;
+	sf::Texture white;
 
 	std::vector<int> active;
+	std::vector<int> attackPos;
 
 	Pawn(float x, float y, int sideColor, int cubePos, float size);
 
-	void setFigure();
+	void setFigure(int sideColor);
 	void updateNext(int pos);	
-	void movement(Field *field, int action) override;
+	void figureAction(Field *field, int action);
+
 
 	
 	int getSide();

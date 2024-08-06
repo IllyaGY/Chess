@@ -28,17 +28,14 @@ int main()
 	ScreenRes(x, y);
 	sf::RenderWindow window(sf::VideoMode(x, y), "SFML works!");
 	window.clear();
-	sf::Text text;
-	text.setFillColor(sf::Color::Red);
-	text.setCharacterSize(24); // in pixels, not points!
 
 
 	Field field(OBJECT_SIZE, x, y);
 
 	Game game(&field, OBJECT_SIZE);
 
-	Pawn pawn(field.getCoord(24 + 2).x, field.getCoord(24 + 2).y, 0, 24 + 2, OBJECT_SIZE);
-	pawn.setFigure();
+	
+
 
 
 
@@ -50,10 +47,11 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 			else if (event.type == sf::Event::MouseButtonReleased)
-				game.reverseCurrFrame();
+				game.lock = false; 
+				
+
 
 		}
-		
 		window.clear();
 
 
@@ -62,27 +60,23 @@ int main()
 
 
 
-		text.setString(sf::Mouse::getPosition().x + " " + sf::Mouse::getPosition().y);
-		window.draw(text);
-
 
 
 
 		field.fieldToScreen(&window);
-		pawn.drawFigure(&window);
 		game.drawAll(&window, &field);
 		window.display();
 
 
-		
-		
-		if(!game.getCurrFrame() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
-			game.checkIf(&window, &field);
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !game.lock){
+			if(game.done)
+				game.checkIf(&window, &field);
 
-		if (field.getStatus() && game.getLast() > -1) {
-			game.makeMove(&window, &field);
+			if (!game.done && !game.lock && game.getLast() > -1) 
+				game.makeMove(&window, &field);
+
+		
 		}
-
 
 
 

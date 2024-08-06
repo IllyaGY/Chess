@@ -1,5 +1,5 @@
 #include "Field.h"
-
+#include "Game.h"
 
 
 Field::Field(int squareSize, int &x, int &y) {
@@ -53,37 +53,77 @@ bool Field::isClicked(sf::Vector2f pos, sf::Vector2f posCurr) {
 	return false;
 }
 
-int Field::cubesClicked(sf::Vector2f pos) {
+int Field::cubesClicked(sf::Vector2f pos, Game *game) {
 	for (int i = 0; i < activeFields.size(); i++) {
 		if (pos.x >= field[activeFields.at(i)].getPosition().x && pos.x <= field[activeFields.at(i)].getPosition().x + s &&
 			pos.y >= field[activeFields.at(i)].getPosition().y && pos.y <= field[activeFields.at(i)].getPosition().y + s)
 			return activeFields.at(i);
+
+	}
+	for (int i = 0; i < activeAttackFields.size(); i++) {
+		if (pos.x >= field[activeAttackFields.at(i)].getPosition().x && pos.x <= field[activeAttackFields.at(i)].getPosition().x + s &&
+			pos.y >= field[activeAttackFields.at(i)].getPosition().y && pos.y <= field[activeAttackFields.at(i)].getPosition().y + s) {
+			game->remove(board.at(activeAttackFields.at(i)));
+			//int k = activeAttackFields.at(i); 
+			//board.erase(activeAttackFields.at(i));
+			return activeAttackFields.at(i);
+		}
 	}
 	return -1;
 }
 
+bool Field::sameSides(int currPos, int comparable) {
+	return std::dynamic_pointer_cast<Pawn>(board.at(currPos))->getSide() == 
+		std::dynamic_pointer_cast<Pawn>(board.at(comparable))->getSide();
+}
 
-void Field::setPassMove(std::vector<int> pVec) {
-	activeFields = pVec;
+
+void Field::setPassMove(std::vector<int> moveVec, std::vector<int> attackVec, int ourPos) {
 	setActive = true;
-	for (int i = 0; i < pVec.size(); i++) {
-		backUp.push_back(field[pVec.at(i)].getFillColor());
-		field[pVec.at(i)].setFillColor(sf::Color::Green);
+	for (int i = 0; i < moveVec.size(); i++) {
+		if (board.find(moveVec.at(i)) == board.end()) {
+			backUp.push_back(field[moveVec.at(i)].getFillColor());
+			field[moveVec.at(i)].setFillColor(sf::Color::Green);
+			activeFields.push_back(moveVec.at(i));
+		}
+		else break; 
+		
+	}
+	for (int i = 0; i < attackVec.size(); i++) {
+		if (board.find(attackVec.at(i)) != board.end() && !sameSides(ourPos, attackVec.at(i))) {
+			backUpAttack.push_back(field[attackVec.at(i)].getFillColor());
+			field[attackVec.at(i)].setFillColor(sf::Color::Red);
+			activeAttackFields.push_back(attackVec.at(i));
+		}
 
+		
 	}
 }
 
-//void Field::fillBoard(int pos, std::shared_ptr<Figure> figure) {
-	//board[pos] = figure;
-//}
+void Field::fillBoard(int pos, std::shared_ptr<Figure> figure) {
+	board[pos] = figure;
+}
+void Field::emplaceBoard(int oldPos, int newPos){
+	std::shared_ptr<Figure> figure = board.at(oldPos); 
+	board.erase(oldPos);
+	board[newPos] = figure;
+
+}
+
 
 void Field::deactivateMove() {
 	setActive = false;
 	for (int i = 0; i < activeFields.size(); i++) {
 		field[activeFields.at(i)].setFillColor(backUp.at(i));
 	}
+	for (int i = 0; i < activeAttackFields.size(); i++) {
+		field[activeAttackFields.at(i)].setFillColor(backUpAttack.at(i));
+
+	}
+	activeAttackFields.clear();
 	activeFields.clear();
 	backUp.clear();
+	backUpAttack.clear();
 }
 
 

@@ -13,16 +13,15 @@ class Game
 public:
 	std::vector<std::shared_ptr<Figure>> playerBase{};
 	int lastSel = -1;
-	bool currentFrame;
-
+	bool done = true;
+	bool lock = false; 
 	
 
 	Game(Field *field, int objectSize);
 
 	int getLast();
-	bool getCurrFrame();
-	
-	void reverseCurrFrame();
+
+	void remove(std::shared_ptr<Figure> figure);
 	void drawAll(sf::RenderWindow *window, Field *field);
 	void undo(sf::RenderWindow *window, Field *field);
 	void checkIf(sf::RenderWindow *window, Field *field);

@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Field.h"
+
 
 class Field; 
 
@@ -24,6 +24,8 @@ public:
 	int getPos();
 	bool isClicked(sf::Vector2f pos);
 
-	virtual void movement(Field *field, int action) = 0;
+	virtual void figureAction(Field *field, int action) = 0;
+
+
 };
 

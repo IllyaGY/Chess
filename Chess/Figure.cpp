@@ -1,5 +1,5 @@
 #include "Figure.h"
-
+#include "Field.h"
 
 Figure::Figure(float x, float y, int side, int pos, float size) {
 	sideColor = side;
@@ -14,6 +14,7 @@ void Figure::setPos(float x, float y) {
 
 
 }
+
 void Figure::setPos(sf::Vector2f cubePos) {
 	this->figure.setPosition(cubePos);
 
