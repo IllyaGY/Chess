@@ -68,7 +68,7 @@ int main()
 		window.display();
 
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !game.lock){
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !game.lock){
 			if(game.done)
 				game.checkIf(&window, &field);
 
