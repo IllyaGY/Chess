@@ -20,6 +20,8 @@ public:
 	Game(Field *field, int objectSize);
 
 	int getLast();
+	int getActionState(); 
+	int getLockState(); 
 
 	void remove(std::shared_ptr<Figure> figure);
 	void drawAll(sf::RenderWindow *window, Field *field);

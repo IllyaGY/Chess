@@ -24,6 +24,13 @@ Game::Game(Field *field, int objectSize) {
 }
 
 
+int Game::getActionState() {
+	return done; 
+}
+int Game::getLockState() {
+	return lock;
+}
+
 int Game::getLast() {
 	return lastSel;
 }

@@ -68,11 +68,11 @@ int main()
 		window.display();
 
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !game.lock){
-			if(game.done)
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !game.getLockState()){
+			if(game.getActionState())
 				game.checkIf(&window, &field);
 
-			if (!game.done && !game.lock && game.getLast() > -1) 
+			if (!game.getActionState() && !game.getLockState() && game.getLast() > -1)
 				game.makeMove(&window, &field);
 
 		
