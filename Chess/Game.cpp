@@ -35,18 +35,12 @@ int Game::getLast() {
 	return lastSel;
 }
 
-void Game::remove(std::shared_ptr<Figure> figure) {
-	auto it = std::find(playerBase.begin(), playerBase.end(),
-		figure);
-	if(it != playerBase.end())
-		playerBase.erase(it);
-}
+
 
 
 void Game::drawAll(sf::RenderWindow *window, Field *field) {
 	for (int i = 0; i < playerBase.size(); i++) {
 		this->playerBase.at(i)->drawFigure(window);
-
 	}
 }
 

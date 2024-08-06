@@ -35,6 +35,11 @@ bool Figure::isClicked(sf::Vector2f pos) {
 	return false;
 }
 
+void Figure::setUndraw() {
+	this->setPos(0, 0);
+	this->figure.setSize(sf::Vector2f(0, 0));
+	pos = -1;
+}
 
 void Figure::selectedItem(sf::RenderWindow *window, int i) {
 	if (i)
