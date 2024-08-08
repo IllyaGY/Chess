@@ -43,8 +43,9 @@ public:
 	bool getStatus();
 	bool isClicked(sf::Vector2f pos, sf::Vector2f posCurr);
 	int cubesClicked(sf::Vector2f pos, Game* game);
-
 	bool sameSides(int currPos, int comparable);
+	bool isTaken(int pos); 
+
 	void setPassMove(std::vector<int> moveVec, std::vector<int> attackVec, int ourPos);
 	void fillBoard(int pos, std::shared_ptr<Figure> figure);
 	void emplaceBoard(int oldPos, int newPos);

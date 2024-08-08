@@ -3,10 +3,13 @@
 
 Pawn::Pawn(float x, float y, int sideColor, int cubePos, float size) : Figure(x, y, sideColor, cubePos, size) {
 
-	if(sideColor)
+
+	if (sideColor)
 		active = { cubePos - 8, cubePos - 16 };
 	else
 		active = { cubePos + 8, cubePos + 16 };
+
+
 
 
 	attackPos = {};
@@ -41,7 +44,7 @@ int Pawn::getSide() {
 	return sideColor;
 }
 
-void Pawn::updateNext(int pos) {
+void Pawn::updateNext(int pos) {			//THINK OF A DIFFERENT UPDATE COZ BISHOP IS WAY DIFFERENT
 	this->pos = pos; 
 	active.clear();
 	attackPos.clear(); 

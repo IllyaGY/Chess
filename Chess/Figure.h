@@ -21,11 +21,12 @@ public:
 	void selectedItem(sf::RenderWindow *window, int i);
 	void drawFigure(sf::RenderWindow *window);
 	void setUndraw();
+	
 
 	int getPos();
 	bool isClicked(sf::Vector2f pos);
 	
-
+	virtual void updateNext(int pos) = 0;
 	virtual void figureAction(Field *field, int action) = 0;
 
 

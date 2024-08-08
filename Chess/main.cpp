@@ -5,6 +5,7 @@
 #include "Figure.h"
 #include "Pawn.h"
 #include "Game.h"
+#include "Bishop.h"
 
 #define OBJECT_SIZE 100.f
 
@@ -35,7 +36,6 @@ int main()
 	Game game(&field, OBJECT_SIZE);
 
 	
-
 
 
 

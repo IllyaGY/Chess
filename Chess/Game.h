@@ -4,7 +4,10 @@
 
 
 #include "Pawn.h"
+#include "Bishop.h"
 #include "Field.h"
+
+
 #include <vector>
 #define PAWN_SIZE 16
 
@@ -15,9 +18,12 @@ public:
 	int lastSel = -1;
 	bool done = true;
 	bool lock = false; 
-	
 
 	Game(Field *field, int objectSize);
+
+
+	template <typename T>
+	std::shared_ptr<T> getType(int pos);
 
 	int getLast();
 	int getActionState(); 
@@ -29,3 +35,5 @@ public:
 	void makeMove(sf::RenderWindow *window, Field *field);
 };
 
+
+#include "Game.tpp"
