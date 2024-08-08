@@ -23,15 +23,15 @@ Game::Game(Field *field, int objectSize) {
 		field->fillBoard(48 + i, playerBase.at(8+i));
 
 	}
-	for (int i = 0; i < 4; i++) {
+	//for (int i = 0; i < 4; i++) {
 		playerBase.push_back(std::make_shared<Bishop>(field->getCoord(27).x, field->getCoord(27).y, 0, 27, objectSize));
 		auto figure = getType<Bishop>(16);
 		if (figure) {
 			figure->setFigure(0);
-			figure->BishopActiveSet(field);
+			figure->updateNext(figure->getPos(),field);
 		}
 		field->fillBoard(27, playerBase.at(16));
-	}
+	
 
 }
 
@@ -70,10 +70,9 @@ void Game::checkIf(sf::RenderWindow *window, Field *field) {
 		for (int i = 0; i < playerBase.size(); i++) {
 			if (playerBase.at(i)->isClicked(clickPos)) {
 				playerBase.at(i)->selectedItem(window, 1);
-				if (std::shared_ptr<Bishop> bishop = std::dynamic_pointer_cast<Bishop>(playerBase.at(i)))
-					bishop->BishopActiveSet(field);
 				auto figure = getType<Figure>(i); // Use correct function name and ensure Figure is the correct type
 				if (figure) {
+					figure->updateNext(playerBase.at(i)->getPos(), field);
 					figure->figureAction(field, 1);
 				}
 				lastSel = i;
@@ -100,7 +99,7 @@ void Game::makeMove(sf::RenderWindow* window, Field* field) {
 			auto figure = getType<Figure>(lastSel); 
 			if (figure) {
 				field->emplaceBoard(figure->getPos(), input);
-				figure->updateNext(input);
+				figure->setCubePos(input);
 			}
 			
 		}

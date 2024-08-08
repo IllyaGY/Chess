@@ -19,7 +19,7 @@ public:
 	void figureAction(Field* field, int action);
 
 
-	void updateNext(int pos) override;
+	void updateNext(int pos, Field *field) override;
 
 
 	int getSide();

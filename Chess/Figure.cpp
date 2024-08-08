@@ -28,6 +28,11 @@ int Figure::getPos() {
 	return pos;
 }
 
+void Figure::setCubePos(int pos) {
+	this->pos = pos; 
+}
+
+
 void Figure::drawFigure(sf::RenderWindow *window) {
 	window->draw(figure);
 }

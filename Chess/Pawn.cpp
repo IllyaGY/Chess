@@ -3,22 +3,8 @@
 
 Pawn::Pawn(float x, float y, int sideColor, int cubePos, float size) : Figure(x, y, sideColor, cubePos, size) {
 
-
-	if (sideColor)
-		active = { cubePos - 8, cubePos - 16 };
-	else
-		active = { cubePos + 8, cubePos + 16 };
-
-
-
-
-	attackPos = {};
-	if (cubePos % 8 != 0) {
-		attackPos.push_back(cubePos + 7);
-	}
-	if((cubePos-7) % 8 != 0) {
-		attackPos.push_back(cubePos + 9);
-	}
+	
+	firstTime = cubePos; 
 
 	if (!black.loadFromFile("Textures/pawn.png"))
 	if (!black.create(size, size))
@@ -29,6 +15,7 @@ Pawn::Pawn(float x, float y, int sideColor, int cubePos, float size) : Figure(x,
 		throw std::invalid_argument("BLARGH");
 
 }
+
 
 
 void Pawn::setFigure(int sideColor) {
@@ -44,27 +31,38 @@ int Pawn::getSide() {
 	return sideColor;
 }
 
-void Pawn::updateNext(int pos) {			//THINK OF A DIFFERENT UPDATE COZ BISHOP IS WAY DIFFERENT
+void Pawn::updateNext(int pos, Field *field) {			//THINK OF A DIFFERENT UPDATE COZ BISHOP IS WAY DIFFERENT
 	this->pos = pos; 
 	active.clear();
 	attackPos.clear(); 
 	if (sideColor) {
-		active.push_back(pos - 8);
-		if (pos % 8 != 0) {
+		if (pos - 8 >= 0 && !field->isTaken(pos - 8)) {
+			active.push_back(pos - 8);
+			if (firstTime == pos && pos - 16 >= 0 && !field->isTaken(pos - 16)) {
+				active.push_back(pos - 16);
+			}
+		}
+		if (pos % 8 != 0 && pos - 9 >= 0) {
 			attackPos.push_back(pos - 9);
 		}
-		if ((pos - 7) % 8 != 0) {
+		if ((pos - 7) % 8 != 0 && pos - 7 >= 0) {
 			attackPos.push_back(pos - 7);
-			
+
 		}
 	}
 	else {
-		active.push_back(pos + 8);
-		if (pos % 8 != 0) {
-			attackPos.push_back(pos + 7);
+		if (pos + 8 < 64 && !field->isTaken(pos + 8)) {
+			active.push_back(pos + 8);
+			if (firstTime == pos && pos + 16 < 64 && !field->isTaken(pos + 16)) {
+				active.push_back(pos + 16);
+			}
 		}
-		if ((pos - 7) % 8 != 0) {
+		if (pos % 8 != 0 && pos + 9 < 64) {
 			attackPos.push_back(pos + 9);
+		}
+		if ((pos + 7) % 8 != 0 && pos + 7 < 64) {
+			attackPos.push_back(pos + 7);
+
 		}
 	}
 	

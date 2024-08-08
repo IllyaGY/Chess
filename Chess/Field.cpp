@@ -96,12 +96,12 @@ bool Field::isTaken(int pos) {
 void Field::setPassMove(std::vector<int> moveVec, std::vector<int> attackVec, int ourPos) {
 	setActive = true;
 	for (int i = 0; i < moveVec.size(); i++) {
-		if (board.find(moveVec.at(i)) == board.end()) {
+		if (board.find(moveVec.at(i)) == board.end()) {									
 			backUp.push_back(field[moveVec.at(i)].getFillColor());
 			field[moveVec.at(i)].setFillColor(sf::Color::Green);
 			activeFields.push_back(moveVec.at(i));
 		}
-		else break; 
+		
 		
 	}
 	for (int i = 0; i < attackVec.size(); i++) {
