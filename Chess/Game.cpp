@@ -4,35 +4,30 @@
 #define PLAYER_STATE 0
 
 Game::Game(Field *field, int objectSize) {
+	int i = 0; 
 	//Pawn 16 units
 	//White 
+	int bishopPos[4] = {2, 5, 58, 61};
 		
-	for (int i = 0; i < 8; i++) {
+	for (i = 0; i < 8; i++) {
 		playerBase.push_back(std::make_shared<Pawn>(field->getCoord(8 + i).x, field->getCoord(8 + i).y, 0, 8 + i, objectSize));
-		auto figure = getType<Pawn>(i);
-		if (figure)
-			figure->setFigure(0);
 		field->fillBoard(8 + i, playerBase.at(i));
 
 	}
-	for (int i = 0; i < 8; i++) {
-		playerBase.push_back(std::make_shared<Pawn>(field->getCoord(48 + i).x, field->getCoord(48 + i).y, 1, 48 + i, objectSize));
-		auto figure = getType<Pawn>(8+i);
-		if (figure)
-			figure->setFigure(1);
-		field->fillBoard(48 + i, playerBase.at(8+i));
+	int lim = i + 8; 
+	for (; i < lim; i++) {
+		playerBase.push_back(std::make_shared<Pawn>(field->getCoord(40 + i).x, field->getCoord(40 + i).y, 1, 40 + i, objectSize));
+		field->fillBoard(40 + i, playerBase.at(i));
 
 	}
-	//for (int i = 0; i < 4; i++) {
-		playerBase.push_back(std::make_shared<Bishop>(field->getCoord(27).x, field->getCoord(27).y, 0, 27, objectSize));
-		auto figure = getType<Bishop>(16);
-		if (figure) {
-			figure->setFigure(0);
-			figure->updateNext(figure->getPos(),field);
-		}
-		field->fillBoard(27, playerBase.at(16));
-	
+	int ind = 0; 
+	lim = i + 4; 
+	for (; i < lim; i++, ind++) {
+		playerBase.push_back(std::make_shared<Bishop>(field->getCoord(bishopPos[ind]).x, field->getCoord(bishopPos[ind]).y, 
+			((bishopPos[ind] < 31) ? 0 : 1), bishopPos[ind], objectSize));
+		field->fillBoard(bishopPos[ind], playerBase.at(i));
 
+	}
 }
 
 

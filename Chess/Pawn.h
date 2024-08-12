@@ -20,7 +20,6 @@ public:
 
 	Pawn(float x, float y, int sideColor, int cubePos, float size);
 
-	void setFigure(int sideColor);
 	void updateNext(int pos, Field *field) override;	
 	void figureAction(Field *field, int action);
 

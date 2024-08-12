@@ -6,25 +6,24 @@ Pawn::Pawn(float x, float y, int sideColor, int cubePos, float size) : Figure(x,
 	
 	firstTime = cubePos; 
 
-	if (!black.loadFromFile("Textures/pawn.png"))
-	if (!black.create(size, size))
-		throw std::invalid_argument("BLARGH");
-
-	if (!white.loadFromFile("Textures/pawnWhite.png"))
-	if (!white.create(size, size))
-		throw std::invalid_argument("BLARGH");
-
-}
-
-
-
-void Pawn::setFigure(int sideColor) {
-	if (sideColor)
+	if(sideColor){
+		if (!black.loadFromFile("Textures/pawn.png"))
+		if (!black.create(size, size))
+			throw std::invalid_argument("BLARGH");
 		figure.setTexture(&black);
-	else
+	}
+
+	else {
+		if (!white.loadFromFile("Textures/pawnWhite.png"))
+		if (!white.create(size, size))
+			throw std::invalid_argument("BLARGH");
 		figure.setTexture(&white);
+	}
 
 }
+
+
+
 
 
 int Pawn::getSide() {

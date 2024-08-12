@@ -8,26 +8,25 @@ Bishop::Bishop(float x, float y, int sideColor, int cubePos, float size) : Figur
 
 
 
+	if (sideColor) {
 
 
-	if (!black.loadFromFile("Textures/bishop.png"))
+		if (!black.loadFromFile("Textures/bishop.png")) 
 		if (!black.create(size, size))
 			throw std::invalid_argument("BLARGH");
-
-	if (!white.loadFromFile("Textures/bishopWhite.png"))
+		figure.setTexture(&black);
+		
+	}
+	else {
+		if (!white.loadFromFile("Textures/bishopWhite.png")) 
 		if (!white.create(size, size))
 			throw std::invalid_argument("BLARGH");
-
-}
-
-
-void Bishop::setFigure(int sideColor) {
-	if (sideColor)
-		figure.setTexture(&black);
-	else
 		figure.setTexture(&white);
+		
+	}
 
 }
+
 
 
 int Bishop::getSide() {
