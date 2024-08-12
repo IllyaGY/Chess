@@ -21,10 +21,7 @@ public:
 	Pawn(float x, float y, int sideColor, int cubePos, float size);
 
 	void updateNext(int pos, Field *field) override;	
-	void figureAction(Field *field, int action);
+	void figureAction(Field *field, int action) override;
 
-
-	
-	int getSide();
 };
 

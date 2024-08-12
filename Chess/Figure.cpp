@@ -20,9 +20,11 @@ void Figure::setPos(sf::Vector2f cubePos) {
 
 }
 
-bool bordering(int side, int pos) {
-	if (side) return true; 
-} // Left - 0 Right - 1
+
+int Figure::getSide()
+{
+	return sideColor;
+}
 
 int Figure::getPos() {
 	return pos;
@@ -61,3 +63,4 @@ void Figure::selectedItem(sf::RenderWindow *window, int i) {
 
 
 }
+

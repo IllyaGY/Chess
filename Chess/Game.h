@@ -28,6 +28,7 @@ public:
 	int getLast();
 	int getActionState(); 
 	int getLockState(); 
+	int getSideGlob(int index); 
 
 	void drawAll(sf::RenderWindow *window, Field *field);
 	void undo(sf::RenderWindow *window, Field *field);

@@ -26,11 +26,8 @@ Pawn::Pawn(float x, float y, int sideColor, int cubePos, float size) : Figure(x,
 
 
 
-int Pawn::getSide() {
-	return sideColor;
-}
 
-void Pawn::updateNext(int pos, Field *field) {			//THINK OF A DIFFERENT UPDATE COZ BISHOP IS WAY DIFFERENT
+void Pawn::updateNext(int pos, Field *field) {			
 	this->pos = pos; 
 	active.clear();
 	attackPos.clear(); 
@@ -67,8 +64,8 @@ void Pawn::updateNext(int pos, Field *field) {			//THINK OF A DIFFERENT UPDATE C
 	
 }
 
-
-void Pawn::figureAction(Field *field, int action){
+	
+void Pawn::figureAction(Field *field, int action){					//Make a virtual
 	if (action) 
 		field->setPassMove(active,attackPos,pos);
 	else

@@ -1,6 +1,7 @@
 #include "Field.h"
 #include "Game.h"
 
+class Game; 
 
 Field::Field(int squareSize, int &x, int &y) {
 	s = float(squareSize);
@@ -70,18 +71,8 @@ int Field::cubesClicked(sf::Vector2f pos, Game *game) {
 	return -1;
 }
 
-bool Field::sameSides(int currPos, int comparable) {				//TRASH CODE - REWRITE 
-	int side_first = -1; 
-	int side_two = -1; 
-	if (std::shared_ptr<Bishop> bishop = std::dynamic_pointer_cast<Bishop>(board.at(currPos)))
-		side_first = bishop->getSide();
-	if (std::shared_ptr<Pawn> pawn = std::dynamic_pointer_cast<Pawn>(board.at(currPos)))
-		side_first = pawn->getSide();
-	if (std::shared_ptr<Bishop> bishop = std::dynamic_pointer_cast<Bishop>(board.at(comparable)))
-		side_two = bishop->getSide();
-	if (std::shared_ptr<Pawn> pawn = std::dynamic_pointer_cast<Pawn>(board.at(comparable)))
-		side_two = pawn->getSide();
-	return side_first == side_two;
+bool Field::sameSides(int currPos, int comparable) {				
+	return board.at(currPos)->getSide() == board.at(comparable)->getSide();
 }
 
 bool Field::isTaken(int pos) {

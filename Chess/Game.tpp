@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Pawn.h"
 #include "Bishop.h"
+#include "Rook.h"
 #include <stdexcept>
 
 class Pawn;

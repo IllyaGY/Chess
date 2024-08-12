@@ -29,10 +29,6 @@ Bishop::Bishop(float x, float y, int sideColor, int cubePos, float size) : Figur
 
 
 
-int Bishop::getSide() {
-	return sideColor;
-}
-
 void Bishop::updateNext(int pos, Field *field) {				//TRASH CODE - REWRITE
 	active.clear();
 	attackPos.clear();

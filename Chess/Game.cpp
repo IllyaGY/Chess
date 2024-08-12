@@ -43,6 +43,10 @@ int Game::getLast() {
 }
 
 
+int Game::getSideGlob(int index) {
+	return playerBase.at(index)->getSide();
+}
+
 void Game::drawAll(sf::RenderWindow *window, Field *field) {
 	for (int i = 0; i < playerBase.size(); i++) {
 		this->playerBase.at(i)->drawFigure(window);
@@ -65,7 +69,7 @@ void Game::checkIf(sf::RenderWindow *window, Field *field) {
 		for (int i = 0; i < playerBase.size(); i++) {
 			if (playerBase.at(i)->isClicked(clickPos)) {
 				playerBase.at(i)->selectedItem(window, 1);
-				auto figure = getType<Figure>(i); // Use correct function name and ensure Figure is the correct type
+				auto figure = getType<Figure>(i); 
 				if (figure) {
 					figure->updateNext(playerBase.at(i)->getPos(), field);
 					figure->figureAction(field, 1);

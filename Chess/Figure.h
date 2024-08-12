@@ -23,7 +23,7 @@ public:
 	void drawFigure(sf::RenderWindow *window);
 	void setUndraw();
 	
-
+	int getSide(); 
 	int getPos();
 	bool isClicked(sf::Vector2f pos);
 	
