@@ -23,14 +23,14 @@ Field::Field(int squareSize, int &x, int &y) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (i % 2 == 0) {
-				if (j % 2 == 0) field[(i * 8) + (j)] = white;
-				else field[(i * 8) + (j)] = green;
+				if (j % 2 == 0) field[i][j] = white;
+				else field[i][j] = green;
 			}
 			else {
-				if (j % 2 == 0) field[(i * 8) + (j)] = green;
-				else field[(i * 8) + (j)] = white;
+				if (j % 2 == 0) field[i][j] = green;
+				else field[i][j] = white;
 			}
-			field[(i * 8) + (j)].setPosition(sideAdd, topAdd);
+			field[i][j].setPosition(sideAdd, topAdd);
 			sideAdd += s;
 		}
 		topAdd += s;
@@ -40,8 +40,13 @@ Field::Field(int squareSize, int &x, int &y) {
 	}
 }
 
+
+sf::RectangleShape * Field::cubeRet(int pos) {
+	return &(field [pos / 8] [pos % 8]);
+}
+
 sf::Vector2f Field::getCoord(int i) {
-	return field[i].getPosition();
+	return cubeRet(i)->getPosition();
 }
 
 
@@ -56,14 +61,14 @@ bool Field::isClicked(sf::Vector2f pos, sf::Vector2f posCurr) {
 
 int Field::cubesClicked(sf::Vector2f pos, Game *game) {
 	for (int i = 0; i < activeFields.size(); i++) {
-		if (pos.x >= field[activeFields.at(i)].getPosition().x && pos.x <= field[activeFields.at(i)].getPosition().x + s &&
-			pos.y >= field[activeFields.at(i)].getPosition().y && pos.y <= field[activeFields.at(i)].getPosition().y + s)
+		if (pos.x >= getCoord(activeFields.at(i)).x && pos.x <= getCoord(activeFields.at(i)).x + s &&
+			pos.y >= getCoord(activeFields.at(i)).y && pos.y <= getCoord(activeFields.at(i)).y + s)
 			return activeFields.at(i);
 
 	}
 	for (int i = 0; i < activeAttackFields.size(); i++) {
-		if (pos.x >= field[activeAttackFields.at(i)].getPosition().x && pos.x <= field[activeAttackFields.at(i)].getPosition().x + s &&
-			pos.y >= field[activeAttackFields.at(i)].getPosition().y && pos.y <= field[activeAttackFields.at(i)].getPosition().y + s) {
+		if (pos.x >= getCoord(activeAttackFields.at(i)).x && pos.x <= getCoord(activeAttackFields.at(i)).x + s &&
+			pos.y >= getCoord(activeAttackFields.at(i)).y && pos.y <= getCoord(activeAttackFields.at(i)).y + s) {
 			board.at(activeAttackFields.at(i))->setUndraw();
 			return activeAttackFields.at(i);
 		}
@@ -82,14 +87,23 @@ bool Field::isTaken(int pos) {
 	
 }
 
+bool Field::isTaken(int posX, int posY) {
+	if (posX >= 0 && posX < 8 && posY >= 0 && posY < 8) {
+		if (board.find(posX * 8 + posY) != board.end())
+			return true;
+	}
+	return false;
+	
+}
+
 
 
 void Field::setPassMove(std::vector<int> moveVec, std::vector<int> attackVec, int ourPos) {
 	setActive = true;
 	for (int i = 0; i < moveVec.size(); i++) {
 		if (board.find(moveVec.at(i)) == board.end()) {									
-			backUp.push_back(field[moveVec.at(i)].getFillColor());
-			field[moveVec.at(i)].setFillColor(sf::Color::Green);
+			backUp.push_back(cubeRet(moveVec.at(i))->getFillColor());
+			cubeRet(moveVec.at(i))->setFillColor(sf::Color::Green);
 			activeFields.push_back(moveVec.at(i));
 		}
 		
@@ -97,8 +111,8 @@ void Field::setPassMove(std::vector<int> moveVec, std::vector<int> attackVec, in
 	}
 	for (int i = 0; i < attackVec.size(); i++) {
 		if (board.find(attackVec.at(i)) != board.end() && !sameSides(ourPos, attackVec.at(i))) {
-			backUpAttack.push_back(field[attackVec.at(i)].getFillColor());
-			field[attackVec.at(i)].setFillColor(sf::Color::Red);
+			backUpAttack.push_back(cubeRet(attackVec.at(i))->getFillColor());
+			cubeRet(attackVec.at(i))->setFillColor(sf::Color::Red);
 			activeAttackFields.push_back(attackVec.at(i));
 		}
 
@@ -120,10 +134,10 @@ void Field::emplaceBoard(int oldPos, int newPos){
 void Field::deactivateMove() {
 	setActive = false;
 	for (int i = 0; i < activeFields.size(); i++) {
-		field[activeFields.at(i)].setFillColor(backUp.at(i));
+		cubeRet(activeFields.at(i))->setFillColor(backUp.at(i));
 	}
 	for (int i = 0; i < activeAttackFields.size(); i++) {
-		field[activeAttackFields.at(i)].setFillColor(backUpAttack.at(i));
+		cubeRet(activeAttackFields.at(i))->setFillColor(backUpAttack.at(i));
 
 	}
 	activeAttackFields.clear();
@@ -133,12 +147,12 @@ void Field::deactivateMove() {
 }
 
 
-
 void Field::fieldToScreen(sf::RenderWindow *window) {
 
 
-	for (int i = 0; i < SIZE; i++) {
-		window->draw(field[i]);
+	for (int i = 0; i < 8; i++) {
+		for(int j = 0; j < 8; j++)
+		window->draw(field[i][j]);
 
 	}
 }

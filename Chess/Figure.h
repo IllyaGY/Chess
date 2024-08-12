@@ -22,6 +22,11 @@ public:
 	void selectedItem(sf::RenderWindow *window, int i);
 	void drawFigure(sf::RenderWindow *window);
 	void setUndraw();
+
+	bool lB(int pos);
+	bool rB(int pos);
+	bool tB(int pos);
+	bool bB(int pos);
 	
 	int getSide(); 
 	int getPos();

@@ -20,6 +20,20 @@ void Figure::setPos(sf::Vector2f cubePos) {
 
 }
 
+bool Figure::lB(int pos) {
+	return pos % 8 == 0;
+}
+
+bool Figure::rB(int pos) {
+	return (pos - 7) % 8 == 0;
+}
+
+bool Figure::tB(int pos) {
+	return pos < 7;
+}
+bool Figure::bB(int pos) {
+	return pos > (63 - 8);
+}
 
 int Figure::getSide()
 {

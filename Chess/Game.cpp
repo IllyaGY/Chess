@@ -8,7 +8,11 @@ Game::Game(Field *field, int objectSize) {
 	//Pawn 16 units
 	//White 
 	int bishopPos[4] = {2, 5, 58, 61};
+	int rookPos[4] = {0, 7, 56,63};
+	int knightPos[4] = {1, 6, 57,62};
 		
+
+ // SEPARATE INTO FUNCTIONS
 	for (i = 0; i < 8; i++) {
 		playerBase.push_back(std::make_shared<Pawn>(field->getCoord(8 + i).x, field->getCoord(8 + i).y, 0, 8 + i, objectSize));
 		field->fillBoard(8 + i, playerBase.at(i));
@@ -28,7 +32,24 @@ Game::Game(Field *field, int objectSize) {
 		field->fillBoard(bishopPos[ind], playerBase.at(i));
 
 	}
+	ind = 0; 
+	lim = i + 4;
+	for (; i < lim; i++, ind++) {
+		playerBase.push_back(std::make_shared<Rook>(field->getCoord(rookPos[ind]).x, field->getCoord(rookPos[ind]).y,
+			((rookPos[ind] < 31) ? 0 : 1), rookPos[ind], objectSize));
+		field->fillBoard(rookPos[ind], playerBase.at(i));
+
+	}
+	ind = 0; 
+	lim = i + 4;
+	for (; i < lim; i++, ind++) {
+		playerBase.push_back(std::make_shared<Knight>(field->getCoord(knightPos[ind]).x, field->getCoord(knightPos[ind]).y,
+			((knightPos[ind] < 31) ? 0 : 1), knightPos[ind], objectSize));
+		field->fillBoard(knightPos[ind], playerBase.at(i));
+
+	}
 }
+
 
 
 int Game::getActionState() {
