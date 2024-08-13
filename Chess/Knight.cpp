@@ -9,12 +9,6 @@ Knight::Knight(float x, float y, int sideColor, int cubePos, float size) : Figur
 
 
 
-void Knight::def(std::string texturePath) {
-	if (!textureForm.loadFromFile(texturePath))
-		if (!textureForm.create(size, size))
-			throw std::invalid_argument("BLARGH");
-	figure.setTexture(&textureForm);
-}
 
 
 void Knight::updateNext(int pos, Field* field) {			
@@ -31,12 +25,4 @@ void Knight::updateNext(int pos, Field* field) {
 		else if(x >= 0 && x<8 && y >= 0 && y < 8 ) 
 			active.push_back(x * 8 + y);
 	}
-}
-void Knight::figureAction(Field* field, int action) {
-	if (action)
-		field->setPassMove(active, attackPos, pos);
-	else
-		field->deactivateMove();
-
-
 }

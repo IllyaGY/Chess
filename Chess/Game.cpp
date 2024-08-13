@@ -104,19 +104,19 @@ void Game::undo(sf::RenderWindow *window, Field *field) {
 
 
 void Game::checkIf(sf::RenderWindow *window, Field *field) {
-		sf::Vector2f clickPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-		for (int i = 0; i < playerBase.size(); i++) {
-			if (playerBase.at(i)->isClicked(clickPos)) {
+		sf::Vector2f clickPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));						
+		for (int i = 0; i < playerBase.size(); i++) {															//For all the players check if any of them clicked
+			if (playerBase.at(i)->isClicked(clickPos)) {														
 				playerBase.at(i)->selectedItem(window, 1);
 				auto figure = getType<Figure>(i); 
-				if (figure) {
+				if (figure) {																					//Check if the pointer of the needed type, may be useless since those functions are member ones
 					figure->updateNext(playerBase.at(i)->getPos(), field);
 					figure->figureAction(field, 1);
 				}
-				lastSel = i;
-				lock = true;
-				done = false;
-				break;
+				lastSel = i;																					//Last selected index = i
+				lock = true;																					//lock the state for frame and click consistency
+				done = false;																					//In the middle of choosing a move
+				break;																							//Break if find
 			}
 
 		}
@@ -130,19 +130,19 @@ void Game::checkIf(sf::RenderWindow *window, Field *field) {
 
 
 void Game::makeMove(sf::RenderWindow* window, Field* field) {
-		sf::Vector2f clickPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-		int input = field->cubesClicked(clickPos, this);
-		if (input > -1) {
-			playerBase.at(lastSel)->setPos(field->getCoord(input).x, field->getCoord(input).y);
-			auto figure = getType<Figure>(lastSel); 
+		sf::Vector2f clickPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));								
+		int input = field->cubesClicked(clickPos, this);																
+		if (input > -1) {																								//if clicked on a cube that is currently active
+			playerBase.at(lastSel)->setPos(field->getCoord(input).x, field->getCoord(input).y);							//set the pos of the last selected figure to the pos of the cube clicked
+			auto figure = getType<Figure>(lastSel);																		//Get pointer type, mb useless
 			if (figure) {
-				field->emplaceBoard(figure->getPos(), input);
-				figure->setCubePos(input);
+				field->emplaceBoard(figure->getPos(), input);															//emplace the old figure, if any, with the new one
+				figure->setCubePos(input);																				//set the pos of the figure to input - cube index
 			}
 			
 		}
-		undo(window, field);
-		lock = true;
+		undo(window, field);																							//Undo selection
+		lock = true;																									//unlock for future selection
 		
 	
 }

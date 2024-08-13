@@ -20,6 +20,14 @@ void Figure::setPos(float x, float y) {
 
 }
 
+
+void Figure::def(std::string texturePath) {
+	if (!textureForm.loadFromFile(texturePath))
+		if (!textureForm.create(size, size))
+			throw std::invalid_argument("Texture could not be loaded");
+	figure.setTexture(&textureForm);
+}
+
 void Figure::setPos(sf::Vector2f cubePos) {
 	this->figure.setPosition(cubePos);
 
@@ -58,6 +66,17 @@ void Figure::drawFigure(sf::RenderWindow *window) {
 	window->draw(figure);
 }
 
+
+
+void Figure::figureAction(Field* field, int action) {
+	if (action)
+		field->setPassMove(active, attackPos, pos);
+	else
+		field->deactivateMove();
+
+
+}
+
 bool Figure::isClicked(sf::Vector2f pos) {
 	sf::Vector2f p = figure.getPosition();
 	if (float(pos.x) >= figure.getPosition().x && float(pos.x) <= figure.getPosition().x + 100.f && float(pos.y) >= figure.getPosition().y && float(pos.y) <= figure.getPosition().y + 100.f)
@@ -78,14 +97,11 @@ void Figure::selectedItem(sf::RenderWindow *window, int i) {
 		figure.setFillColor(sf::Color::White);
 
 
-
-
-
 }
 
 
 
-void Figure::horizHelper(int move, Field* field, bool (Figure::* func)(int), std::vector<int>& active, std::vector<int>& attackPos, bool king) {
+void Figure::horizHelper(int move, Field* field, bool (Figure::* func)(int),  bool king) {
 	if (!(this->*func)(pos)) {
 		for (int i = pos + move;; i += move) {
 			if (field->isTaken(i)) {
@@ -101,16 +117,16 @@ void Figure::horizHelper(int move, Field* field, bool (Figure::* func)(int), std
 	}
 }
 
-void Figure::horizMove(Field* field, std::vector<int>& active, std::vector<int>& attackPos, bool king) {
+void Figure::horizMove(Field* field,  bool king) {
 	bool (Figure:: * func[4])(int) = { &Figure::tB, &Figure::lB, &Figure::rB,&Figure::bB };
 	int moves[] = { -8, -1, 1, 8 }; 
 	for (int i = 0; i < 4; i++) {
-		horizHelper(moves[i], field, func[i], active, attackPos, king);
+		horizHelper(moves[i], field, func[i], king);
 	}
 
 }
 
-void Figure::diagHelper(Field* field, int &diag, bool &diagPossible, std::vector<int>& active, std::vector<int>& attackPos, bool(Figure::*func1)(int), bool(Figure::* func2)(int), int toGo){
+void Figure::diagHelper(Field* field, int &diag, bool &diagPossible, bool(Figure::*func1)(int), bool(Figure::* func2)(int), int toGo){
 	bool f1 = !(this->*func1)(diag);
 	bool f2 = !(this->*func2)(diag);
 	if (diagPossible && !(this->*func1)(diag) && !(this->*func2)(diag) && diag + toGo >= 0 && diag + toGo < 64) {
@@ -126,7 +142,7 @@ void Figure::diagHelper(Field* field, int &diag, bool &diagPossible, std::vector
 	else diagPossible = false;
 }
 
-void Figure::diagMove(Field* field, std::vector<int>& active, std::vector<int>& attackPos, int *toGo, bool king) {						
+void Figure::diagMove(Field* field, int *toGo, bool king) {						
 	bool (Figure:: * func[4][2])(int) = { {&Figure::lB, &Figure::tB}, {&Figure::rB,&Figure::tB},{&Figure::lB, &Figure::bB},{&Figure::rB, &Figure::bB} };
 	bool diagPossible[4];
 	for (auto& i : diagPossible) i = true;
@@ -134,7 +150,7 @@ void Figure::diagMove(Field* field, std::vector<int>& active, std::vector<int>& 
 	for (auto& i : diag) i = pos;
 	while (diagPossible[0] || diagPossible[1] || diagPossible[2] || diagPossible[3]) {
 		for(int i = 0; i < 4; i++)
-			diagHelper(field, diag[i], diagPossible[i], active, attackPos, func[i][0], func[i][1], toGo[i]);
+			diagHelper(field, diag[i], diagPossible[i], func[i][0], func[i][1], toGo[i]);
 		if (king) break;
 	}
 }

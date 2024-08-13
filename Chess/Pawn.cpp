@@ -20,10 +20,7 @@ void Pawn::def(int toGo, int toA1, int toA2, int limit, std::string texturePath)
 	toAttack[0] = toA1;
 	toAttack[1] = toA2;
 	limit = 64;
-	if (!textureForm.loadFromFile(texturePath))
-	if (!textureForm.create(size, size))
-		throw std::invalid_argument("BLARGH");
-	figure.setTexture(&textureForm);
+	Figure::def(texturePath);
 }
 
 
@@ -49,11 +46,3 @@ void Pawn::updateNext(int pos, Field *field) {
 }
 
 	
-void Pawn::figureAction(Field *field, int action){					//Make a virtual
-	if (action) 
-		field->setPassMove(active,attackPos,pos);
-	else
-		field->deactivateMove();
-
-
-}

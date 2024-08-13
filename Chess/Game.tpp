@@ -21,3 +21,7 @@ std::shared_ptr<T> Game::getType(int pos){
 
 template std::shared_ptr<Pawn> Game::getType<Pawn>(int);
 template std::shared_ptr<Bishop> Game::getType<Bishop>(int);
+template std::shared_ptr<Rook> Game::getType<Rook>(int);
+template std::shared_ptr<Knight> Game::getType<Knight>(int);
+template std::shared_ptr<Queen> Game::getType<Queen>(int);
+template std::shared_ptr<King> Game::getType<King>(int);

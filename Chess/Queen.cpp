@@ -8,27 +8,13 @@ Queen::Queen(float x, float y, int sideColor, int cubePos, float size) : Figure(
 
 
 
-void Queen::def(std::string texturePath) {
-	if (!textureForm.loadFromFile(texturePath))
-		if (!textureForm.create(size, size))
-			throw std::invalid_argument("BLARGH");
-	figure.setTexture(&textureForm);
-}
+
 
 void Queen::updateNext(int pos, Field* field) {
 	this->pos = pos;
 	active.clear();
 	attackPos.clear();
-	horizMove(field, active, attackPos);
-	diagMove(field, active, attackPos, toGo);
+	horizMove(field);
+	diagMove(field, toGo);
 }
 
-
-void Queen::figureAction(Field* field, int action) {
-	if (action)
-		field->setPassMove(active, attackPos, pos);
-	else
-		field->deactivateMove();
-
-
-}

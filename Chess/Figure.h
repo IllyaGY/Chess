@@ -14,6 +14,11 @@ public:
 	bool drawable = true;
 	
 
+	std::vector<int> active = {};
+	std::vector<int> attackPos = {};
+
+
+	sf::Texture textureForm;
 
 	Figure(float x, float y, int side, int pos, float size);
 
@@ -24,6 +29,8 @@ public:
 	void selectedItem(sf::RenderWindow* window, int i);
 	void drawFigure(sf::RenderWindow* window);
 	void setUndraw();
+	void def(std::string texturePath);
+
 
 	bool lB(int pos);
 	bool rB(int pos);
@@ -35,16 +42,15 @@ public:
 	bool isClicked(sf::Vector2f pos);
 
 	virtual void updateNext(int pos, Field* field) = 0;
-	virtual void figureAction(Field* field, int action) = 0;
+	void figureAction(Field* field, int action);
 
 protected:
 
-	void horizHelper(int move, Field* field, bool (Figure::* func)(int), std::vector<int>& active, std::vector<int>& attackPos, bool king = false);
-	void horizMove(Field* field, std::vector<int>& active, std::vector<int>& attackPos, bool king = false);
+	void horizHelper(int move, Field* field, bool (Figure::* func)(int), bool king = false);
+	void horizMove(Field* field, bool king = false);
 
-	void diagHelper(Field* field, int &diag, bool &diagPossible, std::vector<int>& active, std::vector<int>& attackPos, 
-		bool(Figure::* func1)(int), bool(Figure::* func2)(int),int toGo);
-	void diagMove(Field* field, std::vector<int>& active, std::vector<int>& attackPos, int* toGo, bool king = false);
+	void diagHelper(Field* field, int &diag, bool &diagPossible, bool(Figure::* func1)(int), bool(Figure::* func2)(int),int toGo);
+	void diagMove(Field* field, int* toGo, bool king = false);
 	
 
 	friend class Rook;
