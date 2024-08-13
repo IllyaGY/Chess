@@ -5,6 +5,10 @@
 
 #include "Pawn.h"
 #include "Bishop.h"
+#include "Rook.h"
+#include "Knight.h"
+#include "Queen.h"
+#include "King.h"
 #include "Field.h"
 
 

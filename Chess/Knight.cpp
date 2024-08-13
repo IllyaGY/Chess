@@ -3,29 +3,22 @@
 
 
 Knight::Knight(float x, float y, int sideColor, int cubePos, float size) : Figure(x, y, sideColor, cubePos, size) {
-
-
-
-
-	if (sideColor) {
-		if (!black.loadFromFile("Textures/knight.png"))
-			if (!black.create(size, size))
-				throw std::invalid_argument("BLARGH");
-		figure.setTexture(&black);
-	}
-
-	else {
-		if (!white.loadFromFile("Textures/knightWhite.png"))
-			if (!white.create(size, size))
-				throw std::invalid_argument("BLARGH");
-		figure.setTexture(&white);
-	}
-
+	if (sideColor) 	def("Textures/knight.png");
+	else	def("Textures/knightWhite.png");
 }
 
 
 
-void Knight::updateNext(int pos, Field* field) {											//TRASH CODE
+void Knight::def(std::string texturePath) {
+	if (!textureForm.loadFromFile(texturePath))
+		if (!textureForm.create(size, size))
+			throw std::invalid_argument("BLARGH");
+	figure.setTexture(&textureForm);
+}
+
+
+void Knight::updateNext(int pos, Field* field) {			
+	this->pos = pos;
 	active.clear();
 	attackPos.clear();
 	int posIn2D[2] = {pos/8, pos%8};

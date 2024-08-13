@@ -10,9 +10,10 @@ Game::Game(Field *field, int objectSize) {
 	int bishopPos[4] = {2, 5, 58, 61};
 	int rookPos[4] = {0, 7, 56,63};
 	int knightPos[4] = {1, 6, 57,62};
-		
+	int queenPos[2] = {3,59};
+	int kingPos[2] = {4,60};
 
- // SEPARATE INTO FUNCTIONS
+ // SEPARATE INTO A FUNCTION
 	for (i = 0; i < 8; i++) {
 		playerBase.push_back(std::make_shared<Pawn>(field->getCoord(8 + i).x, field->getCoord(8 + i).y, 0, 8 + i, objectSize));
 		field->fillBoard(8 + i, playerBase.at(i));
@@ -48,6 +49,23 @@ Game::Game(Field *field, int objectSize) {
 		field->fillBoard(knightPos[ind], playerBase.at(i));
 
 	}
+	ind = 0;
+	lim = i + 2; 
+	for (; i < lim; i++, ind++) {
+		playerBase.push_back(std::make_shared<Queen>(field->getCoord(queenPos[ind]).x, field->getCoord(queenPos[ind]).y,
+			((queenPos[ind] < 31) ? 0 : 1), queenPos[ind], objectSize));
+		field->fillBoard(queenPos[ind], playerBase.at(i));
+
+	}
+	ind = 0;
+	lim = i + 2;
+	for (; i < lim; i++, ind++) {
+		playerBase.push_back(std::make_shared<King>(field->getCoord(kingPos[ind]).x, field->getCoord(kingPos[ind]).y,
+			((kingPos[ind] < 31) ? 0 : 1), kingPos[ind], objectSize));
+		field->fillBoard(kingPos[ind], playerBase.at(i));
+
+	}
+
 }
 
 

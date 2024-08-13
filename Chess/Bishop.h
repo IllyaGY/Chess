@@ -6,13 +6,16 @@ class Bishop :
     public Figure
 {
 public:
-	sf::Texture black;
-	sf::Texture white;
+	sf::Texture textureForm;
 
+
+	int toGo[4] = { -9, -7, 7, 9 };
 	std::vector<int> active;
 	std::vector<int> attackPos;
 
 	Bishop(float x, float y, int sideColor, int cubePos, float size);
+
+	void def(std::string texturePath);
 
 
 
