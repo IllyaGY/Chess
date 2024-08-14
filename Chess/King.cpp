@@ -10,12 +10,9 @@ King::King(float x, float y, int sideColor, int cubePos, float size) : Figure(x,
 
 
 
-void King::updateNext(int pos, Field* field) {
-	this->pos = pos;
-	active.clear();
-	attackPos.clear();
+void King::updateNext(Field* field) {
 	horizMove(field, true);
-	diagMove(field, toGo, true);
+	diagMove(field, true);
 }
 
 

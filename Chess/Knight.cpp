@@ -11,14 +11,11 @@ Knight::Knight(float x, float y, int sideColor, int cubePos, float size) : Figur
 
 
 
-void Knight::updateNext(int pos, Field* field) {			
-	this->pos = pos;
-	active.clear();
-	attackPos.clear();
+void Knight::updateNext(Field* field) {			
 	int posIn2D[2] = {pos/8, pos%8};
 	for (int i = 0; i < 8; i++) {
-		int x = posIn2D[0] + toGo[i][0];
-		int y = posIn2D[1] + toGo[i][1];
+		int x = posIn2D[0] + knightMoves[i][0];
+		int y = posIn2D[1] + knightMoves[i][1];
 		if (field->isTaken(x, y))
 			attackPos.push_back(x*8 + y);
 		

@@ -6,7 +6,7 @@ class Knight :
 public:
 	sf::Texture textureForm;
 
-	int toGo[8][2] = {
+	int knightMoves[8][2] = {
 		{-1,-2},
 		{-2,-1},
 		{-2,1},
@@ -20,6 +20,6 @@ public:
 
 	Knight(float x, float y, int sideColor, int cubePos, float size);
 
-	void updateNext(int pos, Field* field) override;
+	void updateNext(Field* field) override;
 };
 

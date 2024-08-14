@@ -15,10 +15,7 @@ Rook::Rook(float x, float y, int sideColor, int cubePos, float size) : Figure(x,
 
 
 
-void Rook::updateNext(int pos, Field* field) {	
-	this->pos = pos;
-	active.clear();
-	attackPos.clear();
+void Rook::updateNext(Field* field) {	
 	horizMove(field);
 }		
 

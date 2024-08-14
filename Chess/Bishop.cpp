@@ -16,10 +16,7 @@ Bishop::Bishop(float x, float y, int sideColor, int cubePos, float size) : Figur
 
 
 
-void Bishop::updateNext(int pos, Field *field) {				
-	this->pos = pos;
-	active.clear();
-	attackPos.clear();
-	diagMove(field, toGo);
+void Bishop::updateNext(Field *field) {				
+	diagMove(field);
 }
 

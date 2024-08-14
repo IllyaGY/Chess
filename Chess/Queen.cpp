@@ -10,11 +10,9 @@ Queen::Queen(float x, float y, int sideColor, int cubePos, float size) : Figure(
 
 
 
-void Queen::updateNext(int pos, Field* field) {
-	this->pos = pos;
-	active.clear();
-	attackPos.clear();
+void Queen::updateNext(Field* field) {
+
 	horizMove(field);
-	diagMove(field, toGo);
+	diagMove(field);
 }
 

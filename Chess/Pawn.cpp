@@ -1,39 +1,35 @@
 #include "Pawn.h"
 #include "Figure.h"
 
+
+
 Pawn::Pawn(float x, float y, int sideColor, int cubePos, float size) : Figure(x, y, sideColor, cubePos, size) {
 
 	
-	firstTime = cubePos; 
-
-	if(sideColor) def(-8, -9, -7, -1, "Textures/pawn.png");
-
-
-	else def(8, 7, 9, 64, "Textures/pawnWhite.png");
+	firstTime = cubePos;  //To compare it if the pawn still can make a two cube move
+	if(sideColor) def(DOWN, diagBottomRIGHT, diagBottomLEFT, limitUP, "Textures/pawn.png");
+	else def(UP, diagUpRIGHT, diagUpLEFT, limitDOWN, "Textures/pawnWhite.png");
 	
 
 }
 
 
-void Pawn::def(int toGo, int toA1, int toA2, int limit, std::string texturePath) {
-	this->toGo = toGo;
-	toAttack[0] = toA1;
-	toAttack[1] = toA2;
-	limit = 64;
+void Pawn::def(int pawnMoves, int toA1, int toA2, int limit, std::string texturePath) {
+	this->pawnMoves = pawnMoves;
+	this->toAttack[0] = toA1;
+	this->toAttack[1] = toA2;
+	this->limit = limit;
 	Figure::def(texturePath);
 }
 
 
 
 
-void Pawn::updateNext(int pos, Field *field) {			
-	this->pos = pos; 
-	active.clear();
-	attackPos.clear(); 
-	if (pos + toGo != limit && !field->isTaken(pos + toGo)) {
-		active.push_back(pos + toGo);
-		if (firstTime == pos && pos + 2*toGo != limit && !field->isTaken(pos + 2 * toGo)) {
-			active.push_back(pos + 2 * toGo);
+void Pawn::updateNext(Field *field) {			
+	if (pos + pawnMoves != limit && !field->isTaken(pos + pawnMoves)) {
+		active.push_back(pos + pawnMoves);
+		if (firstTime == pos && pos + 2* pawnMoves != limit && !field->isTaken(pos + 2 * pawnMoves)) {
+			active.push_back(pos + 2 * pawnMoves);
 		}
 	}
 	if (!lB(pos) && ((sideColor && !tB(pos)) || (!sideColor && !bB(pos)))) {

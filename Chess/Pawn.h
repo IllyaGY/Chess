@@ -7,11 +7,14 @@
 class Field;
 
 
+
+
+
 class Pawn : public Figure
 {
 public:
 
-	int toGo;
+	int pawnMoves;
 	int toAttack[2];
 	int limit; 
 
@@ -23,7 +26,7 @@ public:
 
 
 	void def(int toGo, int toA1, int toA2, int limit,  std::string texture);
-	void updateNext(int pos, Field *field) override;	
+	void updateNext(Field *field) override;	
 
 };
 

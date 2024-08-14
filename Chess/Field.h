@@ -41,7 +41,6 @@ public:
 	sf::RectangleShape *cubeRet(int pos);
 	sf::Vector2f getCoord(int i);
 
-	int* pos2D(int pos); 
 
 	bool getStatus();
 	bool isClicked(sf::Vector2f pos, sf::Vector2f posCurr);
