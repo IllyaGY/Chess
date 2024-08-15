@@ -4,8 +4,6 @@
 #include <memory>
 #include <map>
 #include "Figure.h"
-#include "Pawn.h"
-#include "Game.h"
 #define  SIZE  64 
 
 class Figure;

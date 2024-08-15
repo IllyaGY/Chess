@@ -31,6 +31,9 @@ void Figure::setPos(sf::Vector2f cubePos) {
 
 }
 
+
+//Border check
+
 bool Figure::lB(int pos) {
 	return pos % 8 == 0;
 }
@@ -46,6 +49,12 @@ bool Figure::bB(int pos) {
 	return pos > rowBOTTOM;
 }
 
+
+
+
+
+
+
 int Figure::getSide()
 {
 	return sideColor;
@@ -60,9 +69,18 @@ void Figure::setCubePos(int pos) {
 }
 
 
+
+
+
+
 void Figure::drawFigure(sf::RenderWindow *window) {
 	window->draw(figure);
 }
+
+
+
+
+
 
 void Figure::vecClean() {
 	active.clear();
@@ -81,11 +99,21 @@ bool Figure::isClicked(sf::Vector2f pos) {
 	return false;
 }
 
+
+
+
+
+
 void Figure::setUndraw() {
 	this->setPos(0, 0);
 	this->figure.setSize(sf::Vector2f(0, 0));
 	pos = -1;
 }
+
+
+
+
+
 
 void Figure::selectedItem(sf::RenderWindow *window, Field* field, int action) {
 	if (action) {
