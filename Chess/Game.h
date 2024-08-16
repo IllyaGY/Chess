@@ -13,11 +13,29 @@
 
 
 #include <vector>
-#define PAWN_SIZE 16
 
 class Game
 {
 public:
+
+
+
+	sf::Font font;
+	int white = 0; 
+	int black = 0; 
+
+	sf::Vector2f posWhite; 
+	sf::Vector2f posBlack; 
+
+
+	std::string WHITE = "White: ";
+	std::string BLACK = "Black: ";
+
+	sf::Text scoreWhite; 
+	sf::Text scoreBlack; 
+
+	sf::CircleShape sideMarker;
+
 
 	int currSideMove = 0; //0 - White, 1 - Black
 
@@ -37,12 +55,15 @@ public:
 
 
 
-
+	
 	int getLast();
-	int getActionState(); 
+	void switchMarkerPos(int side);
+	int getActionState();
 	int getLockState(); 
 	int getSideGlob(int index); 
 
+
+	void addToSide(int side, int points);
 	void drawAll(sf::RenderWindow *window, Field *field);
 	void undo(sf::RenderWindow *window, Field *field);
 	void checkIf(sf::RenderWindow *window, Field *field);

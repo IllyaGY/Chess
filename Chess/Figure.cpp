@@ -31,7 +31,9 @@ void Figure::setPos(sf::Vector2f cubePos) {
 
 }
 
-
+int Figure::getPoints() {
+	return pointsForFigure;
+}
 //Border check
 
 bool Figure::lB(int pos) {

@@ -35,9 +35,6 @@ int main()
 
 	Game game(&field, OBJECT_SIZE);
 
-	
-
-
 
 	while (window.isOpen())
 	{
@@ -53,15 +50,6 @@ int main()
 
 		}
 		window.clear();
-
-
-
-
-
-
-
-
-
 
 		field.fieldToScreen(&window);
 		game.drawAll(&window, &field);

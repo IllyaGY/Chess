@@ -123,11 +123,15 @@ void Field::setPassMove(std::vector<int> moveVec, std::vector<int> attackVec, in
 void Field::fillBoard(int pos, std::shared_ptr<Figure> figure) {
 	board[pos] = figure;
 }
-void Field::emplaceBoard(int oldPos, int newPos){
+int Field::emplaceBoard(int oldPos, int newPos){
+	int points = 0; 
 	std::shared_ptr<Figure> figure = board.at(oldPos); 
 	board.erase(oldPos);
+	if (board.find(newPos) != board.end()) {
+		points = board.at(newPos)->getPoints(); 
+	}
 	board[newPos] = figure;
-
+	return points; 
 }
 
 

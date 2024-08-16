@@ -46,10 +46,10 @@ public:
 	bool sameSides(int currPos, int comparable);
 	bool isTaken(int pos); 
 	bool isTaken(int posX, int poxY); 
+	int emplaceBoard(int oldPos, int newPos);
 
 	void setPassMove(std::vector<int> moveVec, std::vector<int> attackVec, int ourPos);
 	void fillBoard(int pos, std::shared_ptr<Figure> figure);
-	void emplaceBoard(int oldPos, int newPos);
 	void deactivateMove();
 	void fieldToScreen(sf::RenderWindow *window);
 };

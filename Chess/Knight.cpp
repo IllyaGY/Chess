@@ -3,6 +3,8 @@
 
 
 Knight::Knight(float x, float y, int sideColor, int cubePos, float size) : Figure(x, y, sideColor, cubePos, size) {
+
+	pointsForFigure = KnightP;
 	if (sideColor) 	def("Textures/knight.png");
 	else	def("Textures/knightWhite.png");
 }

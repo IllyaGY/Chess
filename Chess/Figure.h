@@ -4,6 +4,15 @@
 
 class Field; 
 
+enum Points {
+	PawnP = 1,
+	BishopP = 3,
+	KnightP = 3,
+	RookP = 5,
+	QueenP = 9,
+	KingP = 100
+};
+
 enum Movement {
 
 	//SHARED
@@ -37,6 +46,9 @@ enum Movement {
 class Figure
 {
 public:
+
+	int pointsForFigure;
+	
 	sf::RectangleShape figure;
 	int pos = -1;
 	int sideColor = -1;
@@ -58,6 +70,7 @@ public:
 
 	void setPos(float x, float y);
 	void setPos(sf::Vector2f cubePos);
+	int getPoints();
 	void setCubePos(int pos);
 	void selectedItem(sf::RenderWindow* window, Field* field, int action);
 	void drawFigure(sf::RenderWindow* window);

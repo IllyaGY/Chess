@@ -5,7 +5,7 @@
 
 Pawn::Pawn(float x, float y, int sideColor, int cubePos, float size) : Figure(x, y, sideColor, cubePos, size) {
 
-	
+	pointsForFigure = PawnP; 
 	firstTime = cubePos;  //To compare it if the pawn still can make a two cube move
 	if(sideColor) def(DOWN, diagBottomRIGHT, diagBottomLEFT, limitUP, "Textures/pawn.png");
 	else def(UP, diagUpRIGHT, diagUpLEFT, limitDOWN, "Textures/pawnWhite.png");

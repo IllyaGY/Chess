@@ -5,6 +5,7 @@
 
 Bishop::Bishop(float x, float y, int sideColor, int cubePos, float size) : Figure(x, y, sideColor, cubePos, size) {
 
+	pointsForFigure = BishopP;
 	if (sideColor) def("Textures/bishop.png");
 
 	else def("Textures/bishopWhite.png");
