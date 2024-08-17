@@ -18,4 +18,8 @@ void King::updateNext(Field* field) {
 }
 
 
+void King::check() {
+	
+}
+
 

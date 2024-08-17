@@ -10,5 +10,7 @@ public:
 
 	void updateNext(Field* field) override;
 
+	void check();
+
 };
 

@@ -10,14 +10,18 @@
 #include "Queen.h"
 #include "King.h"
 
-
-
 #include <vector>
+
+
+#define KING_POS_WHITE 60 
+#define KING_POS_BLACK 4 
 
 class Game
 {
 public:
 
+
+	std::vector<std::shared_ptr<Figure>> possesCheck{};
 
 
 	sf::Font font;
@@ -44,7 +48,7 @@ public:
 	bool done = true;
 	bool lock = false; 
 
-	Game(Field *field, int objectSize);
+	Game(int side, Field *field, int objectSize);
 
 
 	template <typename T>
@@ -62,10 +66,10 @@ public:
 	int getLockState(); 
 	int getSideGlob(int index); 
 
-
 	void addToSide(int side, int points);
 	void drawAll(sf::RenderWindow *window, Field *field);
 	void undo(sf::RenderWindow *window, Field *field);
+	void check(int sideOfKing, std::shared_ptr<Figure> figure);
 	void checkIf(sf::RenderWindow *window, Field *field);
 	void makeMove(sf::RenderWindow *window, Field *field);
 };

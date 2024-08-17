@@ -31,9 +31,9 @@ int main()
 	window.clear();
 
 
-	Field field(OBJECT_SIZE, x, y);
+	Field field(side, OBJECT_SIZE, x, y);
 
-	Game game(&field, OBJECT_SIZE);
+	Game game(side, &field, OBJECT_SIZE);
 
 
 	while (window.isOpen())

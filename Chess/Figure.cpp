@@ -10,6 +10,7 @@ Figure::Figure(float x, float y, int side, int pos, float size) {
 	this->size = size;
 	this->figure.setSize(sf::Vector2f(size, size));
 	this->figure.setPosition(sf::Vector2f(x, y));
+
 }
 
 void Figure::setPos(float x, float y) {
@@ -53,7 +54,9 @@ bool Figure::bB(int pos) {
 
 
 
-
+void Figure::getAttackVec(std::vector<int>& attackVec) {
+	attackVec = attackPos;
+}
 
 
 
@@ -90,6 +93,11 @@ void Figure::vecClean() {
 }
 
 
+void Figure::updateMoves(Field *field) {
+	this->vecClean();
+	this->updateNext(field);
+}
+
 
 bool Figure::isClicked(sf::Vector2f pos) {
 	sf::Vector2f p = figure.getPosition();
@@ -120,8 +128,7 @@ void Figure::setUndraw() {
 void Figure::selectedItem(sf::RenderWindow *window, Field* field, int action) {
 	if (action) {
 		figure.setFillColor(sf::Color::Green);
-		vecClean(); 
-		updateNext(field);
+		this->updateMoves(field);
 		field->setPassMove(active, attackPos, pos);
 	}
 	else{

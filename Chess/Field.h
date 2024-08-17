@@ -34,11 +34,13 @@ public:
 	std::vector<int> activeAttackFields{};
 
 
-	Field(int squareSize, int &x, int &y);
+	Field(int side, int squareSize, int &x, int &y);
 
 	sf::RectangleShape *cubeRet(int pos);
 	sf::Vector2f getCoord(int i);
 
+
+	void def(int start, int end, int inc);
 
 	bool getStatus();
 	bool isClicked(sf::Vector2f pos, sf::Vector2f posCurr);

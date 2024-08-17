@@ -11,7 +11,7 @@ void defText(sf::Font&, sf::Text*, sf::Vector2f);
 
 
 
-Game::Game(Field *field, int objectSize) {
+Game::Game(int side, Field *field, int objectSize) {
 	
 
 	
@@ -20,18 +20,17 @@ Game::Game(Field *field, int objectSize) {
 		throw std::invalid_argument("Font could not be loaded");
 	}
 	
-	posWhite = field->getCoord(MIDDLE_TOP_INDEX);
-	posWhite = sf::Vector2f(posWhite.x, posWhite.y - objectSize / 2);
+	posWhite = field->getCoord(MIDDLE_BOTTOM_INDEX);
+	posWhite = sf::Vector2f(posWhite.x, posWhite.y + 1.5f * objectSize);
 	defText(font, &scoreWhite, posWhite);
 	
-	posBlack = field->getCoord(MIDDLE_BOTTOM_INDEX);
-	posBlack = sf::Vector2f(posBlack.x, posBlack.y + 1.5f * objectSize);
+	posBlack = field->getCoord(MIDDLE_TOP_INDEX);
+	posBlack = sf::Vector2f(posBlack.x, posBlack.y - objectSize / 2);
 	defText(font, &scoreBlack, posBlack);
 
 	sideMarker.setFillColor(sf::Color::Green);
 	sideMarker.setRadius(15);
 	switchMarkerPos(0);
-
 
 
 
@@ -56,6 +55,10 @@ Game::Game(Field *field, int objectSize) {
 	
 	
 
+}
+
+
+void defScore(sf::Font& font, sf::Text* text) {
 }
 
 
@@ -123,6 +126,17 @@ void Game::undo(sf::RenderWindow *window, Field *field) {
 }
 
 
+void Game::check(int sideOfKing, std::shared_ptr<Figure> figure) {
+	std::vector<int>attackVec;
+	figure->getAttackVec(attackVec);
+
+
+	for (auto i : attackVec) {
+		
+	}
+}
+
+
 
 void Game::checkIf(sf::RenderWindow *window, Field *field) {
 		sf::Vector2f clickPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));						
@@ -149,7 +163,8 @@ void Game::makeMove(sf::RenderWindow* window, Field* field) {
 		sf::Vector2f clickPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));								
 		int input = field->cubesClicked(clickPos, this);																
 		if (input > -1) {																								//if clicked on a cube that is currently active
-			playerBase.at(lastSel)->setPos(field->getCoord(input).x, field->getCoord(input).y);							//set the pos of the last selected figure to the pos of the cube clicked
+			playerBase.at(lastSel)->setPos(field->getCoord(input).x, field->getCoord(input).y);			
+			playerBase.at(lastSel)->updateMoves(field);																											//set the pos of the last selected figure to the pos of the cube clicked
 			this->addToSide(currSideMove, field->emplaceBoard(playerBase.at(lastSel)->getPos(), input));															//emplace the old figure, if any, with the new one
 			playerBase.at(lastSel)->setCubePos(input);																				//set the pos of the figure to input - cube index
 			currSideMove = currSideMove > 0 ? 0 : 1;

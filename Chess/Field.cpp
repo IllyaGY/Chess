@@ -3,12 +3,17 @@
 
 class Game; 
 
-Field::Field(int squareSize, int &x, int &y) {
+#define STARTING_BLOCK 0
+#define ENDING_BLOCK 7 
+
+
+
+Field::Field(int side, int squareSize, int &x, int &y) {
 	s = float(squareSize);
 
 
 	leftOffset = x / 2 - (squareSize * 4);	//Offset Left
-	topOffset = y / 2 - (squareSize * 4);		//Offset Top 
+	topOffset = y / 2 + (squareSize * 2);		//Offset Top 
 
 
 	green.setSize(sf::Vector2f(float(squareSize), float(squareSize)));
@@ -18,27 +23,34 @@ Field::Field(int squareSize, int &x, int &y) {
 	white.setFillColor(sf::Color(238, 238, 210));
 
 
+	if (side) def(ENDING_BLOCK, STARTING_BLOCK - 1, -1);
+	else def(STARTING_BLOCK, ENDING_BLOCK + 1, 1);
+}
+
+
+void Field::def(int start, int end, int inc) {
 	float sideAdd = leftOffset;
 	float topAdd = topOffset;
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
+
+	for (int i = start; i != end; i+=inc) {
+		for (int j = start; j != end; j += inc) {
 			if (i % 2 == 0) {
-				if (j % 2 == 0) field[i][j] = white;
-				else field[i][j] = green;
-			}
-			else {
 				if (j % 2 == 0) field[i][j] = green;
 				else field[i][j] = white;
+				
+			}
+			else {
+				if (j % 2 == 0) field[i][j] = white;
+				else field[i][j] = green;
 			}
 			field[i][j].setPosition(sideAdd, topAdd);
 			sideAdd += s;
 		}
-		topAdd += s;
+		topAdd -= s;
 		sideAdd = leftOffset;
-
-
 	}
 }
+
 
 
 sf::RectangleShape * Field::cubeRet(int pos) {

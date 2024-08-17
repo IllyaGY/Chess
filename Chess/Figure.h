@@ -68,6 +68,7 @@ public:
 	Figure(float x, float y, int side, int pos, float size);
 
 
+
 	void setPos(float x, float y);
 	void setPos(sf::Vector2f cubePos);
 	int getPoints();
@@ -78,10 +79,14 @@ public:
 	void def(std::string texturePath);
 	void vecClean();
 
+	void updateMoves(Field* field);
+
 	bool lB(int pos);
 	bool rB(int pos);
 	bool tB(int pos);
 	bool bB(int pos);
+
+	void getAttackVec(std::vector<int>& attackVec);
 
 	int getSide();
 	int getPos();

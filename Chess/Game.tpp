@@ -24,6 +24,7 @@ void Game::figurePlacement(int& i, int* positions, int size_of_pos, Field* field
 		playerBase.push_back(std::make_shared<T>(field->getCoord(positions[ind]).x, field->getCoord(positions[ind]).y,
 			((positions[ind] < 31) ? 0 : 1), positions[ind], objectSize));
 		field->fillBoard(positions[ind], playerBase.at(i));
+		
 
 	}
 }
