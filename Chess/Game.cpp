@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <sstream>
 #include <string>
-
+#include <array>
 
 
 
@@ -280,7 +280,7 @@ void rookCastlingHelper(int king, int rook, std::shared_ptr<King> kingFigure) {
 }
 
 
-void Game::updateKingsThreads(Field* field, int lastSel, int input, int* KingsPos) {
+void Game::updateKingsThreads(Field* field, int lastSel, int input, std::array<int, 2> KingsPos) {
 
 
 	for (int i = 0; i < 2; i++) {
@@ -308,7 +308,6 @@ void Game::updateKingsThreads(Field* field, int lastSel, int input, int* KingsPo
 
 		}
 	}
-	delete[] KingsPos;
 }
 
 
@@ -323,7 +322,8 @@ void Game::makeMove(sf::RenderWindow* window, Field* field) {
 		int input = field->cubesClicked(clickPos, this);																
 		if (input > -1) {																								//if clicked on a cube that is currently active
 			move(input, field, lastSel);																			//Move the object																													
-			updateKingsThreads(field, lastSel, input, new int[2] { KING_LIST_WHITE, KING_LIST_BLACK } );			//Update the current kings check mate condition. 
+			std::array<int, 2> indexOfKings{ KING_LIST_WHITE, KING_LIST_BLACK };
+			updateKingsThreads(field, lastSel, input, indexOfKings);			//Update the current kings check mate condition. 
 			check(field);																							//Check condition
 			currSideMove = currSideMove > 0 ? 0 : 1;																//Switch current playing side
 			switchMarkerPos(currSideMove);																			//Switch the green marker

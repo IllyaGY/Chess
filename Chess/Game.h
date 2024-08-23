@@ -123,7 +123,7 @@ public:
 	void winScreen(sf::RenderWindow* window, int x, int y);
 	void different(std::shared_ptr<Figure> piece, Field* field);
 	void move(int moveTo, Field* field, int lastSel, int fieldPos = -1);
-	void updateKingsThreads(Field* field, int lastSel, int input, int* KingsPos);
+	void updateKingsThreads(Field* field, int lastSel, int input, std::array<int, 2> KingsPos);
 	void makeMove(sf::RenderWindow *window, Field *field);
 
 	void check(Field* field);	

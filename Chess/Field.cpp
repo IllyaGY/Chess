@@ -144,7 +144,7 @@ void helpSetPass(std::vector<int> actionVec, std::vector<sf::Color>& bcColor,
 
 	for (auto i : actionVec) {
 		if (i >= 0 && field->isTaken(i) == sideToEqual) {
-			bcColor.push_back(field->cubeRet(i + side)->getFillColor());		//REWRITE BOARD FIND TO IS TAKEN 
+			bcColor.push_back(field->cubeRet(i + side)->getFillColor());		
 			field->cubeRet(i + side)->setFillColor(color);
 			activeVec.push_back(i + side);
 			vecToInc++;
@@ -154,49 +154,18 @@ void helpSetPass(std::vector<int> actionVec, std::vector<sf::Color>& bcColor,
 }
 
 void Field::setPassMove(Figure *figure) {
-	int indexing = 0; 
-	helpSetPass(figure->getActive(), backUp, activeFields, this, sf::Color::Green, activeSize, -1);	
-	if (King* king = dynamic_cast<King*>(figure))
-		helpSetPass(king->getCastlingVec(), backUp, activeFields, this, sf::Color::Yellow, activeSize, -1);//cubes, the figure can move to
-	
-	
-	helpSetPass(figure->getAttackVec(), backUp, activeFields, this, sf::Color::Red, attackSize, (figure->getSide() == 1 ? 0 : 1));		//where the figure attacks 
-	if(Pawn* pawn = dynamic_cast<Pawn*>(figure))
-		helpSetPass({ pawn->getEnPass() }, backUp, activeFields, this, sf::Color::Yellow, attackSize, (figure->getSide() == 1 ? 0 : 1), figure->getSide());
-	
-	//for (auto i : figure->getActive()) {					//AGAIN COULD USE A HELPER FUNCTION FOR ALL  !!!!!
-	//		backUp.push_back(cubeRet(moveVec.at(i))->getFillColor());		//REWRITE BOARD FIND TO IS TAKEN 
-	//		cubeRet(moveVec.at(i))->setFillColor(sf::Color::Green);
-	//		activeFields.push_back(moveVec.at(i));
-	//	}
-	//	
-	//	
-	//}
-	//for (int i = 0; i < attackVec.size(); i++) {
-	//	if (board.find(attackVec.at(i)) != board.end()) {
-	//		backUpAttack.push_back(cubeRet(attackVec.at(i))->getFillColor());
-	//		cubeRet(attackVec.at(i))->setFillColor(sf::Color::Red);
-	//		activeAttackFields.push_back(attackVec.at(i));
-	//	}
-
-	//	
-	//}
-	//for (int i = 0; i < castleVec.size(); i++) {
-	//	if (board.find(castleVec.at(i)) == board.end() && castleVec.at(i)!=-1) {
-	//		backUp.push_back(cubeRet(castleVec.at(i))->getFillColor());
-	//		cubeRet(castleVec.at(i))->setFillColor(sf::Color::Yellow);
-	//		activeFields.push_back(castleVec.at(i));
-
-	//	}
-	//}
-	//for (int i = 0; i < elPassVec.size(); i++) {
-	//	if (int side = isTaken(elPassVec.at(i)) != -1) {
-	//		backUpAttack.push_back(cubeRet(elPassVec.at(i) - (side ? -8 : 8))->getFillColor());
-	//		cubeRet(elPassVec.at(i) - (side ? -8 : 8))->setFillColor(sf::Color::Yellow);
-	//		activeFields.push_back(elPassVec.at(i) - (side ? -8 : 8));
-
-	//	}
-	//}
+	if (figure != NULL) {
+		int indexing = 0;
+		helpSetPass(figure->getActive(), backUp, activeFields, this, sf::Color::Green, activeSize, -1);	//Active fields
+		if (King* king = dynamic_cast<King*>(figure))
+			helpSetPass(king->getCastlingVec(), backUp, activeFields, this, sf::Color::Yellow, activeSize, -1);//cubes, the figure can move to
+		//All the moving(non attacking) indexes are appended to the activeFields vector first 
+		//All the attacking indexes are appended afterwards
+		//This helps for an shortening everything into a single vector instead of two .
+		helpSetPass(figure->getAttackVec(), backUp, activeFields, this, sf::Color::Red, attackSize, (figure->getSide() == 1 ? 0 : 1));		//where the figure attacks 
+		if (Pawn* pawn = dynamic_cast<Pawn*>(figure))
+			helpSetPass({ pawn->getEnPass() }, backUp, activeFields, this, sf::Color::Yellow, attackSize, (figure->getSide() == 1 ? 0 : 1), figure->getSide());	//en Passant
+	}
 }
 
 void Field::fillBoard(int pos, std::shared_ptr<Figure> figure) {
