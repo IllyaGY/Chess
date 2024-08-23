@@ -7,11 +7,16 @@
 Figure::Figure(float x, float y, int side, int pos, float size) {
 	sideColor = side;
 	this->pos = pos;
+	this->firstPos = pos;
 	this->size = size;
+	this->firstTime = true; 
 	this->figure.setSize(sf::Vector2f(size, size));
 	this->figure.setPosition(sf::Vector2f(x, y));
-
+	
 }
+
+
+
 
 void Figure::setPos(float x, float y) {
 	this->figure.setPosition(sf::Vector2f(x, y));
@@ -52,10 +57,12 @@ bool Figure::bB(int pos) {
 	return pos > rowBOTTOM;
 }
 
+std::vector<int> Figure::getActive() {
+	return active;
+}
 
-
-void Figure::getAttackVec(std::vector<int>& attackVec) {
-	attackVec = attackPos;
+std::vector<int> Figure::getAttackVec() {
+	return attackPos;
 }
 
 
@@ -71,11 +78,14 @@ int Figure::getPos() {
 
 void Figure::setCubePos(int pos) {
 	this->pos = pos; 
+
 }
 
 
 
-
+bool Figure::isFirst() {
+	return firstTime;
+}
 
 
 void Figure::drawFigure(sf::RenderWindow *window) {
@@ -94,7 +104,7 @@ void Figure::vecClean() {
 
 
 void Figure::updateMoves(Field *field) {
-	this->vecClean();
+	this->vecClean(); 
 	this->updateNext(field);
 }
 
@@ -110,7 +120,9 @@ bool Figure::isClicked(sf::Vector2f pos) {
 }
 
 
-
+void Figure::setFirstFalse() {
+	firstTime = false; 
+}
 
 
 
@@ -118,7 +130,10 @@ void Figure::setUndraw() {
 	this->setPos(0, 0);
 	this->figure.setSize(sf::Vector2f(0, 0));
 	pos = -1;
+	vecClean();
 }
+
+
 
 
 
@@ -128,8 +143,7 @@ void Figure::setUndraw() {
 void Figure::selectedItem(sf::RenderWindow *window, Field* field, int action) {
 	if (action) {
 		figure.setFillColor(sf::Color::Green);
-		this->updateMoves(field);
-		field->setPassMove(active, attackPos, pos);
+		field->setPassMove(this);
 	}
 	else{
 		figure.setFillColor(sf::Color::White);
@@ -140,28 +154,38 @@ void Figure::selectedItem(sf::RenderWindow *window, Field* field, int action) {
 }
 
 
+bool Figure::canCastle() {
+	return pos == firstTime;
+}
 
-void Figure::horizHelper(int move, Field* field, bool (Figure::* func)(int),  bool king) {
+
+
+void Figure::horizHelper(int move, Field* field, bool (Figure::* func)(int)) {
 	if (!(this->*func)(pos)) {
 		for (int i = pos + move;; i += move) {
-			if (field->isTaken(i)) {
-				attackPos.push_back(i);
-				break;
-			}
-			else active.push_back(i);
+			if (field->isTaken(i) == -1) active.push_back(i);
 
+			else {
+				if (field->isTaken(i) != sideColor) {
+					attackPos.push_back(i);
+					break;
+				}
+
+				else break;
+			}
+			
 			if ((this->*func)(i)) break;
-			if (king) break;
+
 		}
 		
 	}
 }
 
-void Figure::horizMove(Field* field,  bool king) {
+void Figure::horizMove(Field* field) {
 	bool (Figure:: * func[4])(int) = { &Figure::tB, &Figure::lB, &Figure::rB,&Figure::bB };
 	int moves[] = { -8, -1, 1, 8 }; 
 	for (int i = 0; i < 4; i++) {
-		horizHelper(moves[i], field, func[i], king);
+		horizHelper(moves[i], field, func[i]);
 	}
 
 }
@@ -170,28 +194,35 @@ void Figure::diagHelper(Field* field, int &diag, bool &diagPossible, bool(Figure
 	bool f1 = !(this->*func1)(diag);
 	bool f2 = !(this->*func2)(diag);
 	if (diagPossible && !(this->*func1)(diag) && !(this->*func2)(diag) && diag + toGo >= 0 && diag + toGo < 64) {
-		if (!field->isTaken(diag + toGo)) {
+		if (field->isTaken(diag + toGo) == -1) {
 			diag += toGo;
 			active.push_back(diag);
 		}
 		else {
-			attackPos.push_back(diag + toGo);
-			diagPossible = false;
+			if (field->isTaken(diag + toGo) != sideColor) {
+				attackPos.push_back(diag + toGo);
+				diagPossible = false;
+			}
+			else {
+				diagPossible = false;
+			}
 		}
 	}
 	else diagPossible = false;
 }
 
-void Figure::diagMove(Field* field, bool king) {						
+
+
+void Figure::diagMove(Field* field) {						
 	bool (Figure:: * func[4][2])(int) = { {&Figure::lB, &Figure::tB}, {&Figure::rB,&Figure::tB},{&Figure::lB, &Figure::bB},{&Figure::rB, &Figure::bB} };
 	bool diagPossible[4];
 	for (auto& i : diagPossible) i = true;
 	int diag[4] = {};
 	for (auto& i : diag) i = pos;
 	while (diagPossible[0] || diagPossible[1] || diagPossible[2] || diagPossible[3]) {
-		for(int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++) {
 			diagHelper(field, diag[i], diagPossible[i], func[i][0], func[i][1], diagCoords[i]);
-		if (king) break;
+		}
 	}
 }
 

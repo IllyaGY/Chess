@@ -13,16 +13,53 @@
 #include <vector>
 
 
-#define KING_POS_WHITE 60 
-#define KING_POS_BLACK 4 
+#define KING_LIST_WHITE 30
+#define KING_LIST_BLACK 31 
+
+#define MIDDLE_BOTTOM_INDEX 3
+#define MIDDLE_TOP_INDEX 59
+#define MARKER_OFFSET 50
+
+#define LEFT_BORDER 0
+#define RIGHT_BORDER 8
+
+
+enum NUMS {
+	PAWNS = 16,
+	BISHOPS = 4,
+	ROOKS = 4,
+	KNIGHTS = 4,
+	QUEENS = 2,
+	KINGS = 2
+
+};
+
 
 class Game
 {
 public:
 
+	int* pawnPos = nullptr;
+	int* bishopPos = nullptr;
+	int* rookPos = nullptr;
+	int* knightPos = nullptr;
+	int* queenPos = nullptr;
+	int* kingPos = nullptr;
+
+	std::shared_ptr<Pawn> currentEnPassPawn; 
 
 	std::vector<std::shared_ptr<Figure>> possesCheck{};
 
+	std::vector<std::shared_ptr<Figure>> refsToObj{}; 
+
+	int kings[2] = {-1,-1 }; 
+
+
+	bool endGame = false; 
+
+
+	int playerSide; 
+	int checkS = -1; 
 
 	sf::Font font;
 	int white = 0; 
@@ -37,6 +74,7 @@ public:
 
 	sf::Text scoreWhite; 
 	sf::Text scoreBlack; 
+	sf::Text checkText; 
 
 	sf::CircleShape sideMarker;
 
@@ -48,11 +86,19 @@ public:
 	bool done = true;
 	bool lock = false; 
 
+
 	Game(int side, Field *field, int objectSize);
+
+	void defScore(sf::Vector2f pos1, sf::Vector2f pos2, float offset1, float offset2);
 
 
 	template <typename T>
 	std::shared_ptr<T> getType(int pos);
+
+
+	template <typename T>
+	std::shared_ptr<T> getType(std::shared_ptr<Figure>);
+
 
 	template <typename T>
 	void figurePlacement(int& ind, int* positions, int size_of_pos,  Field* field, int objectSize);
@@ -61,17 +107,26 @@ public:
 
 	
 	int getLast();
-	void switchMarkerPos(int side);
 	int getActionState();
 	int getLockState(); 
 	int getSideGlob(int index); 
 
+
+	void switchMarkerPos(int side);
 	void addToSide(int side, int points);
 	void drawAll(sf::RenderWindow *window, Field *field);
 	void undo(sf::RenderWindow *window, Field *field);
-	void check(int sideOfKing, std::shared_ptr<Figure> figure);
+	
 	void checkIf(sf::RenderWindow *window, Field *field);
+	bool end();
+	void deletePlayers(Field* field);
+	void winScreen(sf::RenderWindow* window, int x, int y);
+	void different(std::shared_ptr<Figure> piece, Field* field);
+	void move(int moveTo, Field* field, int lastSel, int fieldPos = -1);
+	void updateKingsThreads(Field* field, int lastSel, int input, int* KingsPos);
 	void makeMove(sf::RenderWindow *window, Field *field);
+
+	void check(Field* field);	
 };
 
 

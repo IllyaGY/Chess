@@ -45,29 +45,39 @@ int main()
 				window.close();
 			else if (event.type == sf::Event::MouseButtonReleased)
 				game.lock = false; 
+			
 				
 
 
 		}
 		window.clear();
 
-		field.fieldToScreen(&window);
-		game.drawAll(&window, &field);
-		window.display();
+		if (game.end()) {
+			game.deletePlayers(&field);
+			game.winScreen(&window, x / 2, y / 2);
+			window.display();
 
-
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !game.getLockState()){
-			if(game.getActionState())
-				game.checkIf(&window, &field);
-
-			if (!game.getActionState() && !game.getLockState() && game.getLast() > -1)
-				game.makeMove(&window, &field);
-
-		
 		}
+		else {
+			field.fieldToScreen(&window);
+			game.drawAll(&window, &field);
+			window.display();
 
 
 
+
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !game.getLockState()) {
+				if (game.getActionState())
+					game.checkIf(&window, &field);
+
+				if (!game.getActionState() && !game.getLockState() && game.getLast() > -1)
+					game.makeMove(&window, &field);
+
+
+			}
+
+
+		}
 	}
 
 	return 0;

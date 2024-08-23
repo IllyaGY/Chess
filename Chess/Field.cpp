@@ -62,85 +62,164 @@ sf::Vector2f Field::getCoord(int i) {
 }
 
 
-bool Field::getStatus() {
-	return setActive;
+bool Field::isKing(int pos, int currSide) {
+	if (board.find(pos) != board.end()) {											//Checks if the king exists in the attack Vec and if the king is from opposite team 
+		if (std::shared_ptr<King> figure = std::dynamic_pointer_cast<King>(board.at(pos)))
+			return figure->getSide() != currSide;
+	}
+	return false;
 }
+
+
 
 bool Field::isClicked(sf::Vector2f pos, sf::Vector2f posCurr) {
 	if (pos.x >= posCurr.x && pos.x <= posCurr.x + 100.f && pos.y >= posCurr.y && pos.y <= posCurr.y + 100.f) return true;
 	return false;
 }
 
-int Field::cubesClicked(sf::Vector2f pos, Game *game) {
-	for (int i = 0; i < activeFields.size(); i++) {
+int Field::helper(int &i, sf::Vector2f pos, int end) {
+	for (; i < end; i++) {															//AGAIN COULD USE A HELPER FUNCTION !!!!!
 		if (pos.x >= getCoord(activeFields.at(i)).x && pos.x <= getCoord(activeFields.at(i)).x + s &&
 			pos.y >= getCoord(activeFields.at(i)).y && pos.y <= getCoord(activeFields.at(i)).y + s)
 			return activeFields.at(i);
 
 	}
-	for (int i = 0; i < activeAttackFields.size(); i++) {
-		if (pos.x >= getCoord(activeAttackFields.at(i)).x && pos.x <= getCoord(activeAttackFields.at(i)).x + s &&
-			pos.y >= getCoord(activeAttackFields.at(i)).y && pos.y <= getCoord(activeAttackFields.at(i)).y + s) {
-			board.at(activeAttackFields.at(i))->setUndraw();
-			return activeAttackFields.at(i);
-		}
-	}
 	return -1;
 }
 
-bool Field::sameSides(int currPos, int comparable) {				
-	return board.at(currPos)->getSide() == board.at(comparable)->getSide();
+int Field::cubesClicked(sf::Vector2f pos, Game *game) {
+	int index = 0; 
+	int cube;
+	if ((cube = helper(index, pos,  activeSize)) != -1) 
+		return cube; 
+	if ((cube = helper(index, pos, index + attackSize))!= -1)
+		return cube; 
+	return -1;
 }
 
-bool Field::isTaken(int pos) {
-	if (board.find(pos) != board.end())
-		return true; 
-	return false;
+
+
+int Field::isTaken(int pos) {
+	if (board.find(pos) != board.end()) {
+		return board.at(pos)->getSide();
+	}
+	return -1;
 	
 }
 
-bool Field::isTaken(int posX, int posY) {
+void Field::clearField() {
+	board.clear(); 
+
+}
+
+std::shared_ptr<Figure> Field::figurePoint(int boardIndex) {
+	if (board.find(boardIndex) != board.end())
+		return board.at(boardIndex);
+	else return NULL; 
+}
+
+int Field::isTaken(int posX, int posY) {
 	if (posX >= 0 && posX < 8 && posY >= 0 && posY < 8) {
-		if (board.find(posX * 8 + posY) != board.end())
-			return true;
+		if (board.find(posX * 8 + posY) != board.end()) {
+			return board.at(posX * 8 + posY)->getSide();
+		}
 	}
-	return false;
+	return -1;
 	
 }
 
+bool Field::isCastleSquare(int pos) {
+	return field[pos / 8][pos % 8].getFillColor() == sf::Color::Yellow;
+}
+
+void helpSetPass(std::vector<int> actionVec, std::vector<sf::Color>& bcColor,
+	std::vector<int>& activeVec, Field* field, sf::Color color, int& vecToInc, int sideToEqual, int side = -1) {
 
 
-void Field::setPassMove(std::vector<int> moveVec, std::vector<int> attackVec, int ourPos) {
-	setActive = true;
-	for (int i = 0; i < moveVec.size(); i++) {
-		if (board.find(moveVec.at(i)) == board.end()) {									
-			backUp.push_back(cubeRet(moveVec.at(i))->getFillColor());
-			cubeRet(moveVec.at(i))->setFillColor(sf::Color::Green);
-			activeFields.push_back(moveVec.at(i));
+	if (side != -1) {					//Used for correct square drawing for the EnPassant move
+		side = (side ? -8 : 8);
+	}
+	else side = 0; 
+
+
+	for (auto i : actionVec) {
+		if (i >= 0 && field->isTaken(i) == sideToEqual) {
+			bcColor.push_back(field->cubeRet(i + side)->getFillColor());		//REWRITE BOARD FIND TO IS TAKEN 
+			field->cubeRet(i + side)->setFillColor(color);
+			activeVec.push_back(i + side);
+			vecToInc++;
 		}
 		
-		
 	}
-	for (int i = 0; i < attackVec.size(); i++) {
-		if (board.find(attackVec.at(i)) != board.end() && !sameSides(ourPos, attackVec.at(i))) {
-			backUpAttack.push_back(cubeRet(attackVec.at(i))->getFillColor());
-			cubeRet(attackVec.at(i))->setFillColor(sf::Color::Red);
-			activeAttackFields.push_back(attackVec.at(i));
-		}
+}
 
-		
-	}
+void Field::setPassMove(Figure *figure) {
+	int indexing = 0; 
+	helpSetPass(figure->getActive(), backUp, activeFields, this, sf::Color::Green, activeSize, -1);	
+	if (King* king = dynamic_cast<King*>(figure))
+		helpSetPass(king->getCastlingVec(), backUp, activeFields, this, sf::Color::Yellow, activeSize, -1);//cubes, the figure can move to
+	
+	
+	helpSetPass(figure->getAttackVec(), backUp, activeFields, this, sf::Color::Red, attackSize, (figure->getSide() == 1 ? 0 : 1));		//where the figure attacks 
+	if(Pawn* pawn = dynamic_cast<Pawn*>(figure))
+		helpSetPass({ pawn->getEnPass() }, backUp, activeFields, this, sf::Color::Yellow, attackSize, (figure->getSide() == 1 ? 0 : 1), figure->getSide());
+	
+	//for (auto i : figure->getActive()) {					//AGAIN COULD USE A HELPER FUNCTION FOR ALL  !!!!!
+	//		backUp.push_back(cubeRet(moveVec.at(i))->getFillColor());		//REWRITE BOARD FIND TO IS TAKEN 
+	//		cubeRet(moveVec.at(i))->setFillColor(sf::Color::Green);
+	//		activeFields.push_back(moveVec.at(i));
+	//	}
+	//	
+	//	
+	//}
+	//for (int i = 0; i < attackVec.size(); i++) {
+	//	if (board.find(attackVec.at(i)) != board.end()) {
+	//		backUpAttack.push_back(cubeRet(attackVec.at(i))->getFillColor());
+	//		cubeRet(attackVec.at(i))->setFillColor(sf::Color::Red);
+	//		activeAttackFields.push_back(attackVec.at(i));
+	//	}
+
+	//	
+	//}
+	//for (int i = 0; i < castleVec.size(); i++) {
+	//	if (board.find(castleVec.at(i)) == board.end() && castleVec.at(i)!=-1) {
+	//		backUp.push_back(cubeRet(castleVec.at(i))->getFillColor());
+	//		cubeRet(castleVec.at(i))->setFillColor(sf::Color::Yellow);
+	//		activeFields.push_back(castleVec.at(i));
+
+	//	}
+	//}
+	//for (int i = 0; i < elPassVec.size(); i++) {
+	//	if (int side = isTaken(elPassVec.at(i)) != -1) {
+	//		backUpAttack.push_back(cubeRet(elPassVec.at(i) - (side ? -8 : 8))->getFillColor());
+	//		cubeRet(elPassVec.at(i) - (side ? -8 : 8))->setFillColor(sf::Color::Yellow);
+	//		activeFields.push_back(elPassVec.at(i) - (side ? -8 : 8));
+
+	//	}
+	//}
 }
 
 void Field::fillBoard(int pos, std::shared_ptr<Figure> figure) {
 	board[pos] = figure;
 }
+
+
 int Field::emplaceBoard(int oldPos, int newPos){
 	int points = 0; 
 	std::shared_ptr<Figure> figure = board.at(oldPos); 
+	int enPass = 0;
+	if (auto pawn = std::dynamic_pointer_cast<Pawn>(figure)) {
+		if (pawn->getEnPass() == newPos + (figure->getSide() ? 8 : -8)) {
+			enPass = (figure->getSide() ? 8 : -8);
+			pawn->clearElPass();
+		}
+	}
 	board.erase(oldPos);
-	if (board.find(newPos) != board.end()) {
-		points = board.at(newPos)->getPoints(); 
+	if (board.find(newPos + enPass) != board.end()) {
+		board.at(newPos + enPass)->setUndraw();
+		points = board.at(newPos + enPass)->getPoints();
+		
+		
 	}
 	board[newPos] = figure;
 	return points; 
@@ -148,18 +227,13 @@ int Field::emplaceBoard(int oldPos, int newPos){
 
 
 void Field::deactivateMove() {
-	setActive = false;
 	for (int i = 0; i < activeFields.size(); i++) {
 		cubeRet(activeFields.at(i))->setFillColor(backUp.at(i));
 	}
-	for (int i = 0; i < activeAttackFields.size(); i++) {
-		cubeRet(activeAttackFields.at(i))->setFillColor(backUpAttack.at(i));
-
-	}
-	activeAttackFields.clear();
 	activeFields.clear();
 	backUp.clear();
-	backUpAttack.clear();
+	activeSize = 0; 
+	attackSize = 0;
 }
 
 

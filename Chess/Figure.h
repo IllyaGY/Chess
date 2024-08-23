@@ -51,6 +51,8 @@ public:
 	
 	sf::RectangleShape figure;
 	int pos = -1;
+	int firstPos = -1; 
+	bool firstTime;
 	int sideColor = -1;
 	float size = 0;
 	bool drawable = true;
@@ -67,8 +69,6 @@ public:
 
 	Figure(float x, float y, int side, int pos, float size);
 
-
-
 	void setPos(float x, float y);
 	void setPos(sf::Vector2f cubePos);
 	int getPoints();
@@ -80,31 +80,41 @@ public:
 	void vecClean();
 
 	void updateMoves(Field* field);
+	void setFirstFalse(); 
 
 	bool lB(int pos);
 	bool rB(int pos);
 	bool tB(int pos);
 	bool bB(int pos);
 
-	void getAttackVec(std::vector<int>& attackVec);
+	std::vector<int> getAttackVec();
+	std::vector<int> getActive();
 
 	int getSide();
 	int getPos();
 	bool isClicked(sf::Vector2f pos);
 
+	
+	bool isFirst();
 	virtual void updateNext(Field* field) = 0;
 
 protected:
 
-	void horizHelper(int move, Field* field, bool (Figure::* func)(int), bool king = false);
-	void horizMove(Field* field, bool king = false);
-
-	void diagHelper(Field* field, int &diag, bool &diagPossible, bool(Figure::* func1)(int), bool(Figure::* func2)(int),int toGo);
-	void diagMove(Field* field, bool king = false);
 	
 
+	void horizHelper(int move, Field* field, bool (Figure::* func)(int));
+	void horizMove(Field* field);
+
+	void diagHelper(Field* field, int &diag, bool &diagPossible, bool(Figure::* func1)(int), bool(Figure::* func2)(int),int toGo);
+	void diagMove(Field* field);
+	bool canCastle();
+	
 	friend class Rook;
 	friend class Bishop;
 	friend class Queen;
+
+	
+	
+	
 };
 

@@ -18,10 +18,13 @@ void Knight::updateNext(Field* field) {
 	for (int i = 0; i < 8; i++) {
 		int x = posIn2D[0] + knightMoves[i][0];
 		int y = posIn2D[1] + knightMoves[i][1];
-		if (field->isTaken(x, y))
-			attackPos.push_back(x*8 + y);
-		
-		else if(x >= 0 && x<8 && y >= 0 && y < 8 ) 
-			active.push_back(x * 8 + y);
+		if (field->isTaken(x, y) == -1) {
+			if (x >= 0 && x < 8 && y >= 0 && y < 8)
+				active.push_back(x * 8 + y);
+		}
+		else 
+			if (field->isTaken(x, y) != sideColor)
+				attackPos.push_back(x * 8 + y);
+			
 	}
 }

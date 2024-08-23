@@ -16,6 +16,12 @@ std::shared_ptr<T> Game::getType(int pos){
 		return figure;
 	}
 	return nullptr;
+}template <typename T>
+std::shared_ptr<T> Game::getType(std::shared_ptr<Figure> fig){
+	if (std::shared_ptr<T> figure = std::dynamic_pointer_cast<T>(fig)){
+		return figure;
+	}
+	return nullptr;
 }
 
 template <typename T>
@@ -25,8 +31,11 @@ void Game::figurePlacement(int& i, int* positions, int size_of_pos, Field* field
 			((positions[ind] < 31) ? 0 : 1), positions[ind], objectSize));
 		field->fillBoard(positions[ind], playerBase.at(i));
 		
+		
 
 	}
+	for(auto player: playerBase)
+		player->updateMoves(field);
 }
 
 
