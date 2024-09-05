@@ -39,6 +39,16 @@ void Game::figurePlacement(int& i, int* positions, int size_of_pos, Field* field
 }
 
 
+template <typename T>
+void Game::objPosDef(T &obj, int offset, int side) {
+	if (side) {
+		obj.setPosition(sf::Vector2f(posBlack.x - offset, posBlack.y));
+		return; 
+	}
+	obj.setPosition(sf::Vector2f(posWhite.x - offset, posWhite.y));
+} 
+
+
 template void Game::figurePlacement<Pawn>(int& ind, int* positions, int size_of_pos,  Field* field, int objectSize); 
 template void Game::figurePlacement<Bishop>(int& ind, int* positions, int size_of_pos,  Field* field, int objectSize);
 template void Game::figurePlacement<Rook>(int& ind, int* positions, int size_of_pos,  Field* field, int objectSize);

@@ -28,3 +28,7 @@ void Knight::updateNext(Field* field) {
 			
 	}
 }
+
+void Knight::lookUpFill()
+{
+}

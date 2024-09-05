@@ -17,7 +17,11 @@ Rook::Rook(float x, float y, int sideColor, int cubePos, float size) : Figure(x,
 
 
 void Rook::updateNext(Field* field) {	
-	horizMove(field);
-}		
+	horizMove(field, pos, sideColor);
+}
+
+void Rook::lookUpFill()
+{
+}
 
 

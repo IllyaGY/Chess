@@ -18,6 +18,11 @@ Bishop::Bishop(float x, float y, int sideColor, int cubePos, float size) : Figur
 
 
 void Bishop::updateNext(Field *field) {				
-	diagMove(field);
+	diagMove(field, pos, sideColor);
+}
+
+void Bishop::lookUpFill()
+{
+
 }
 

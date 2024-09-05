@@ -14,7 +14,11 @@ Queen::Queen(float x, float y, int sideColor, int cubePos, float size) : Figure(
 
 void Queen::updateNext(Field* field) {
 
-	horizMove(field);
-	diagMove(field);
+	horizMove(field, pos, sideColor);
+	diagMove(field, pos, sideColor);
+}
+
+void Queen::lookUpFill()
+{
 }
 

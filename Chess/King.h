@@ -51,8 +51,10 @@ public:
 	void castlingCheck(Field* field);
 
 	void updateNext(Field* field) override;
+	static void lookUpFill();
 
 	std::vector<int> getCastlingVec();
+	bool getCastlingBool(); 
 
 
 

@@ -1,7 +1,11 @@
 #include "Figure.h"
 #include "Field.h"
 
+std::vector<std::vector<int>> Figure::diagMoves{};
+std::vector<std::vector<int>> Figure::XYMoves{};
 
+int Figure::diagCoords[4] = { diagBottomRIGHT, diagBottomLEFT, diagUpRIGHT, diagUpLEFT };
+int Figure::XYCoords[4] = { DOWN, LEFT, RIGHT, UP };
 
 
 Figure::Figure(float x, float y, int side, int pos, float size) {
@@ -23,6 +27,7 @@ void Figure::setPos(float x, float y) {
 
 
 }
+
 
 
 void Figure::def(std::string texturePath) {
@@ -67,6 +72,8 @@ std::vector<int> Figure::getAttackVec() {
 
 
 
+
+
 int Figure::getSide()
 {
 	return sideColor;
@@ -74,6 +81,9 @@ int Figure::getSide()
 
 int Figure::getPos() {
 	return pos;
+}
+int Figure::getFirstPos() {
+	return firstPos;
 }
 
 void Figure::setCubePos(int pos) {
@@ -141,14 +151,13 @@ void Figure::setUndraw() {
 
 
 void Figure::selectedItem(sf::RenderWindow *window, Field* field, int action) {
-	if (action) {
-		figure.setFillColor(sf::Color::Green);
-		field->setPassMove(this);
-	}
-	else{
-		figure.setFillColor(sf::Color::White);
-		field->deactivateMove();
-	}
+	figure.setFillColor(action ? sf::Color::Green : sf::Color::White);
+	if (action) { 
+		field->setPassMove(this); 
+		return;
+	} 
+	else field->deactivateMove();
+	
 
 
 }
@@ -159,71 +168,106 @@ bool Figure::canCastle() {
 }
 
 
-
-void Figure::horizHelper(int move, Field* field, bool (Figure::* func)(int)) {
-	if (!(this->*func)(pos)) {
-		for (int i = pos + move;; i += move) {
-			if (field->isTaken(i) == -1) active.push_back(i);
-
-			else {
-				if (field->isTaken(i) != sideColor) {
-					attackPos.push_back(i);
-					break;
-				}
-
-				else break;
+void dirHelperFunc(Field* field, int& pos, int& side, std::vector<int>& movementVec, std::vector<int>& active, std::vector<int>& attackPos) {
+	bool negativeSeen = false; //Helps skip all the left over squares if, the previous square is taken
+	for (auto& i : movementVec) {
+		if (!negativeSeen) {
+			if (field->isTaken(i) == -1)
+				active.push_back(i);
+			else if (field->isTaken(i) != side) {
+				attackPos.push_back(i);
+				negativeSeen = true;
 			}
-			
-			if ((this->*func)(i)) break;
+			else negativeSeen = true;
+		}
+		if (i == -1) negativeSeen = false;
+	}
 
+}
+
+
+void Figure::horizMove(Field* field, int &pos, int &side) {
+	dirHelperFunc(field, pos, side, XYMoves.at(pos), active, attackPos); 
+}
+
+
+bool Figure::horizHelper(int &move, bool (* func)(int), int &pos, std::vector<int>& allDirsVec) {
+	for (int i = pos;;i += move) {
+		if (!(*func)(i)) {
+			pos += move; 
+			allDirsVec.push_back(pos);
+			return true;
+		}
+		allDirsVec.push_back(-1);
+		return false; 
+	}
+		
+	
+}
+
+void Figure::fillOutXY() {
+	bool (* func[4])(int) = { &tB, &lB, &rB,&bB };										//FIX
+	std::array<bool, 4> axesPossible = {};
+	std::array<int, 4> axes = {};
+	for (int pos = 0; pos < limitDOWN; pos++) {
+		for (auto& i : axesPossible) i = true;
+		for (auto& i : axes) i = pos;
+		std::vector<int> allDirsVec{}; 
+		for (int i = 0; i < 4;) {
+			if (axesPossible.at(i))
+				axesPossible.at(i) = horizHelper(XYCoords[i], func[i], axes[i], allDirsVec);			//Goes through each direction bottom, left, right, top for white black's y-axis reverse
+			else
+				i++;
 		}
 		
+		XYMoves.push_back(allDirsVec);
 	}
 }
 
-void Figure::horizMove(Field* field) {
-	bool (Figure:: * func[4])(int) = { &Figure::tB, &Figure::lB, &Figure::rB,&Figure::bB };
-	int moves[] = { -8, -1, 1, 8 }; 
-	for (int i = 0; i < 4; i++) {
-		horizHelper(moves[i], field, func[i]);
+
+
+void Figure::diagMove(Field* field, int& pos, int& side) {
+	dirHelperFunc(field, pos, side, diagMoves.at(pos), active, attackPos);
+}
+
+
+
+/*Static diagonal movement fill*/
+bool Figure::diagHelper(std::vector<int> &dirs, int &diag, bool(*func1)(int), bool(*func2)(int), int change){
+	bool f1 = !(*func1)(diag);
+	bool f2 = !(*func2)(diag); 
+	if (!(*func1)(diag) && !(*func2)(diag) && diag + change > limitUP && diag + change < limitDOWN) {
+		diag += change;
+		dirs.push_back(diag);
+		return true; 
+		
 	}
+
+	dirs.push_back(-1);
+	return false; 
 
 }
 
-void Figure::diagHelper(Field* field, int &diag, bool &diagPossible, bool(Figure::*func1)(int), bool(Figure::* func2)(int), int toGo){
-	bool f1 = !(this->*func1)(diag);
-	bool f2 = !(this->*func2)(diag);
-	if (diagPossible && !(this->*func1)(diag) && !(this->*func2)(diag) && diag + toGo >= 0 && diag + toGo < 64) {
-		if (field->isTaken(diag + toGo) == -1) {
-			diag += toGo;
-			active.push_back(diag);
+
+void Figure::fillOutDiag() {
+	bool (*func[4][2])(int) = { {&lB, &tB}, {&rB,&tB},{&lB, &bB},{&rB, &bB} };	//Edges for each diagonal direction
+	std::array<bool, 4> diagPossible = {};
+	std::array<int, 4> diag = {};
+	for (int pos = 0; pos < SIZE; pos++) {
+		std::vector<int> allDiagDirs{}; 
+		for (auto& i : diagPossible) i = true;
+		for (auto& i : diag) i = pos;
+		for (int i = 0; i < 4;) {
+			if (diagPossible.at(i))
+				diagPossible.at(i) = diagHelper(allDiagDirs, diag.at(i), func[i][0], func[i][1], diagCoords[i]);
+			else i++;
 		}
-		else {
-			if (field->isTaken(diag + toGo) != sideColor) {
-				attackPos.push_back(diag + toGo);
-				diagPossible = false;
-			}
-			else {
-				diagPossible = false;
-			}
-		}
-	}
-	else diagPossible = false;
-}
-
-
-
-void Figure::diagMove(Field* field) {						
-	bool (Figure:: * func[4][2])(int) = { {&Figure::lB, &Figure::tB}, {&Figure::rB,&Figure::tB},{&Figure::lB, &Figure::bB},{&Figure::rB, &Figure::bB} };
-	bool diagPossible[4];
-	for (auto& i : diagPossible) i = true;
-	int diag[4] = {};
-	for (auto& i : diag) i = pos;
-	while (diagPossible[0] || diagPossible[1] || diagPossible[2] || diagPossible[3]) {
-		for (int i = 0; i < 4; i++) {
-			diagHelper(field, diag[i], diagPossible[i], func[i][0], func[i][1], diagCoords[i]);
-		}
+		
+		diagMoves.push_back(allDiagDirs);
 	}
 }
 
 
+void fillOutXY() {
+
+}

@@ -115,9 +115,9 @@ void King::castlingCheck(Field *field) {			//Checks whether the row, where the k
 
 void King::updateNext(Field* field) {
 	this->checkList.clear();
-	horizMove(field);
-	diagMove(field);
-	for (int i = 0; i < active.size();) {
+	horizMove(field, pos, sideColor);
+	diagMove(field, pos, sideColor);
+	for (int i = 0; i < active.size();) {	//Kings diagonal move is only one square, so we erase everything, //REFACTOR
 		if (abs(active.at(i) / 8 - pos / 8) > 1 || abs(active.at(i) % 8 - pos % 8) > 1) {
 			active.erase(active.begin() + i);
 		}
@@ -137,6 +137,14 @@ void King::updateNext(Field* field) {
 	
 }
 
+void King::lookUpFill()
+{
+}
+
 std::vector<int> King::getCastlingVec() {
 	return castlingVec;
+}
+
+bool King::getCastlingBool() {
+	return castlingLeft || castlingRight;
 }

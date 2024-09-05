@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <array>
 
 
 class Field; 
@@ -54,16 +55,20 @@ public:
 	int firstPos = -1; 
 	bool firstTime;
 	int sideColor = -1;
-	float size = 0;
-	bool drawable = true;
+	float size;
+
 	
-	int diagCoords[4] = { diagBottomRIGHT, diagBottomLEFT, diagUpRIGHT, diagUpLEFT };
-	int XYCoords[4] = { DOWN, LEFT, RIGHT, UP  };
+	static int diagCoords[4];
+	static int XYCoords[4];
+
 
 
 	std::vector<int> active = {};
 	std::vector<int> attackPos = {};
 
+
+	static std::vector<std::vector<int>> diagMoves;
+	static std::vector<std::vector<int>> XYMoves;
 
 	sf::Texture textureForm;
 
@@ -82,16 +87,21 @@ public:
 	void updateMoves(Field* field);
 	void setFirstFalse(); 
 
-	bool lB(int pos);
-	bool rB(int pos);
-	bool tB(int pos);
-	bool bB(int pos);
+	static bool lB(int pos);
+	static bool rB(int pos);
+	static bool tB(int pos);
+	static bool bB(int pos);
+
+
+	static void fillOutDiag();
+	static void fillOutXY();
 
 	std::vector<int> getAttackVec();
 	std::vector<int> getActive();
 
 	int getSide();
 	int getPos();
+	int getFirstPos();
 	bool isClicked(sf::Vector2f pos);
 
 	
@@ -100,13 +110,17 @@ public:
 
 protected:
 
+
+	void diagMove(Field* field, int &pos, int &side);
+	static bool diagHelper(std::vector<int>& dirs, int& diag, bool(*func1)(int), bool(*func2)(int), int change);
+	
+	
+	void horizMove(Field* field, int &pos, int &side);
+	static bool horizHelper(int &move, bool (* func)(int), int& pos, std::vector<int>& allDirsVec);
 	
 
-	void horizHelper(int move, Field* field, bool (Figure::* func)(int));
-	void horizMove(Field* field);
-
-	void diagHelper(Field* field, int &diag, bool &diagPossible, bool(Figure::* func1)(int), bool(Figure::* func2)(int),int toGo);
-	void diagMove(Field* field);
+	
+	
 	bool canCastle();
 	
 	friend class Rook;

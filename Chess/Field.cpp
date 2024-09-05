@@ -137,7 +137,7 @@ void helpSetPass(std::vector<int> actionVec, std::vector<sf::Color>& bcColor,
 
 
 	if (side != -1) {					//Used for correct square drawing for the EnPassant move
-		side = (side ? -8 : 8);
+		side = (side ? -8 : 8);			//Simply creates an offset so if our normal attack square is f.e. 37, then with side == 1, it would be 29(where the yellow square would be)
 	}
 	else side = 0; 
 
@@ -180,7 +180,7 @@ int Field::emplaceBoard(int oldPos, int newPos){
 	if (auto pawn = std::dynamic_pointer_cast<Pawn>(figure)) {
 		if (pawn->getEnPass() == newPos + (figure->getSide() ? 8 : -8)) {
 			enPass = (figure->getSide() ? 8 : -8);
-			pawn->clearElPass();
+			pawn->clearEnPass();
 		}
 	}
 	board.erase(oldPos);

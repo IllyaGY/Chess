@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+#include <vector>
+#include <array>
 #include <SFML/Graphics.hpp>
 
 #include "Field.h"
@@ -10,7 +12,7 @@
 #include "Queen.h"
 #include "King.h"
 
-#include <vector>
+
 
 
 #define KING_LIST_WHITE 30
@@ -34,6 +36,43 @@ enum NUMS {
 
 };
 
+struct PromMenu {
+	std::array<std::string, 4> paths{ "bishop","rook","queen","knight" };
+	std::string path = "Textures/";
+	std::vector<Bishop> figuresObj{};
+	int size; 
+	sf::Vector2f posBlack;
+	sf::Vector2f posWhite;
+	PromMenu() {}
+	PromMenu( int size, sf::Vector2f posBlack, sf::Vector2f posWhite) {
+		this->posBlack = posBlack;
+		this->posWhite = posWhite;
+		this->size = size; 
+		
+		
+	}
+
+public: 
+	void menuDraw(sf::RenderWindow *window) {
+		/*for (auto& i : figuresObj) {
+			i.drawFigure(window);
+		}*/
+		/*figuresObj.at(0).drawFigure(window);*/
+	}
+	void init(int side) {
+		/*sf::Vector2f pos = side ? posBlack : posWhite; 
+		int offset = 0;
+		for (std::string i : paths) {
+			std::string texture = path + i + (side ? "" : "White") + ".png";
+			figuresObj.push_back(Bishop(pos.x + offset, pos.y, side, -1, size));
+			figuresObj.back().def(texture);
+			offset += size;
+		}*/
+	}
+
+
+};
+
 
 class Game
 {
@@ -47,16 +86,22 @@ public:
 	int* kingPos = nullptr;
 
 	std::shared_ptr<Pawn> currentEnPassPawn; 
+	std::vector<std::shared_ptr<Pawn>> enPawnAttackers{};
 
 	std::vector<std::shared_ptr<Figure>> possesCheck{};
 
 	std::vector<std::shared_ptr<Figure>> refsToObj{}; 
 
+
+
 	int kings[2] = {-1,-1 }; 
 
 
-	bool endGame = false; 
+	bool endGame = false;
 
+
+	PromMenu promMenu;
+	int sideProm = -1;
 
 	int playerSide; 
 	int checkS = -1; 
@@ -103,6 +148,8 @@ public:
 	template <typename T>
 	void figurePlacement(int& ind, int* positions, int size_of_pos,  Field* field, int objectSize);
 
+	template <typename T>
+	void objPosDef(T &obj, int offset, int side);
 
 
 	
@@ -117,13 +164,21 @@ public:
 	void drawAll(sf::RenderWindow *window, Field *field);
 	void undo(sf::RenderWindow *window, Field *field);
 	
+	void enPass(std::shared_ptr<Pawn> pawnAtUse, Field* field);
+
+	void showPawnPromMenu(std::shared_ptr<Pawn> pawn);
+	void checkPawnPromotion(std::shared_ptr<Pawn> pawn, Field* field);
 	void checkIf(sf::RenderWindow *window, Field *field);
 	bool end();
 	void deletePlayers(Field* field);
 	void winScreen(sf::RenderWindow* window, int x, int y);
-	void different(std::shared_ptr<Figure> piece, Field* field);
+	void logicUpdate(std::shared_ptr<Figure> piece, Field* field,int input);
 	void move(int moveTo, Field* field, int lastSel, int fieldPos = -1);
-	void updateKingsThreads(Field* field, int lastSel, int input, std::array<int, 2> KingsPos);
+	void rookCastlingUpdate(Field* field, std::shared_ptr<Rook> rook);
+	void ifKingChosen(std::shared_ptr<King> figure, int input, Field* field);
+	void updateKings(Field* field, std::array<int, 2> KingsPos);
+	void beforeFigUpdate(std::shared_ptr<Figure> piece, Field* field);
+	void afterFigUpdate(std::shared_ptr<Figure> piece, Field* field, int input);
 	void makeMove(sf::RenderWindow *window, Field *field);
 
 	void check(Field* field);	

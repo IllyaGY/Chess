@@ -12,6 +12,6 @@ public:
 	
 
 	void updateNext(Field* field) override;
-
+	static void lookUpFill();
 };
 
